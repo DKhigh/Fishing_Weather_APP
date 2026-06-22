@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기상청 API 테스트</title>
+</head>
+<body>
+    <h1>날씨 데이터 테스트</h1>
+    <script src="apikey.js"></script>
+    <script>
+      // 데이터를 가져와서 확인하는 함수
+      function getWeatherData(url) { 
+        fetch(url) 
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('네트워크 응답이 정상이 아닙니다.');
+            }
+            return response.arrayBuffer(); 
+          }) 
+          .then(buffer => { //인코딩 형식이 UTF-8이 아닌 EUC-KR임으로 수정하여 받아오기
+            const decoder = new TextDecoder('euc-kr');
+            const data = decoder.decode(buffer);
+            
+            console.log(data); 
+            
+          })
+          .catch(error => {
+            console.error('API 호출 중 오류 발생', error);
+          });
+      }
+
+const myApiUrl = `https://apihub.kma.go.kr/api/typ01/url/kma_lhaws.php?tm=&stn=0&help=1&authKey=${MY_API_KEY}`;
+      getWeatherData(myApiUrl);
+    </script>
+</body>
+</html>
