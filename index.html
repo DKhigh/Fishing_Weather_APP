@@ -3,35 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>기상청 API 테스트</title>
+    <title>권역별 해양기상 데이터 다중 API 병합 테스트</title>
 </head>
 <body>
-    <h1>날씨 데이터 테스트</h1>
-    <script src="apikey.js"></script>
-    <script>
-      // 데이터를 가져와서 확인하는 함수
-      function getWeatherData(url) { 
-        fetch(url) 
-          .then(response => {
-            if (!response.ok) {
-              throw new Error('네트워크 응답이 정상이 아닙니다.');
-            }
-            return response.arrayBuffer(); 
-          }) 
-          .then(buffer => { //인코딩 형식이 UTF-8이 아닌 EUC-KR임으로 수정하여 받아오기
-            const decoder = new TextDecoder('euc-kr');
-            const data = decoder.decode(buffer);
-            
-            console.log(data); 
-            
-          })
-          .catch(error => {
-            console.error('API 호출 중 오류 발생', error);
-          });
+  <h1>권역별 기상 데이터 병합 테스트</h1>
+    
+  <script src="apikey.js"></script>
+  <script src="virtualStationMap.js"></script>
+  
+  <script>
+    /**
+     * 1. 해양종합관측 데이터(sea_obs.php) 파싱 함수
+     * @description 원본 데이터가 콤마(,)로 명확히 구분되어 있으므로 split(',')을 사용합니다.
+     * @param {Array} lines - 줄바꿈으로 분리된 API 응답 텍스트 배열
+     * @param {string} tp - 관측 장비 타입 ('C': 파고부이, 'N': 조위관측소 등)
+     * @param {string} keyword - 찾고자 하는 지점명 (예: "제주", "우도")
+     * @returns {Array|null} 매칭된 데이터의 1차원 배열 반환. 없으면 null 반환.
+     */
+    function findSeaObsData(lines, tp, keyword) {
+      const targetLine = lines.find(line => {
+        // 공백을 제거하며 콤마 기준으로 배열화
+        const columns = line.split(',').map(item => item.trim());
+        // 조건: 1번째 열(장비타입)이 일치하고, 4번째 열(지점명)에 키워드가 포함되어야 함
+        return columns[0] === tp && columns[3] && columns[3].includes(keyword);
+      });
+      return targetLine ? targetLine.split(',').map(item => item.trim()) : null;
+    }
+
+    /**
+     * 2. 등표기상관측 데이터(kma_lhaws.php) 파싱 함수
+     * @description 원본 데이터가 콤마가 아닌 '불규칙한 다중 공백'으로 구분되어 있습니다.
+     * 따라서 정규표현식(/\s+/)을 사용하여 공백 기준으로 데이터를 분할합니다.
+     * @param {Array} lines - 줄바꿈으로 분리된 API 응답 텍스트 배열
+     * @param {number|null} id - 등표 고유 관측소 ID (예: 960)
+     * @returns {Object|null} 데이터 가독성을 위해 각 수치들을 객체 형태로 매핑하여 반환.
+     */
+    function findLhawsData(lines, id) {
+      // 해당 권역에 매핑된 등표 ID가 없으면 바로 null 반환 (예: 서부/북부권)
+      if (!id) return null;
+      
+      const targetLine = lines.find(line => {
+        const columns = line.trim().split(/\s+/);
+        // 등표 API는 2번째 열(인덱스 1)에 STN ID가 존재함
+        return columns[1] === id.toString();
+      });
+
+      if (!targetLine) return null;
+
+      // 매칭된 줄을 다시 배열로 쪼개어 필요한 열의 데이터만 추출
+      const cols = targetLine.trim().split(/\s+/);
+      
+      return {
+        stnId: cols[1],      // 지점 번호
+        ta: cols[7],         // 기온 (TA, 단위: °C)
+        ps: cols[12],        // 해면기압 (PS, 단위: hPa)
+        tw: cols[13],        // 수온 (TW, 단위: °C)
+        wh_sig: cols[15],    // 유의파고 (WH SIG, 단위: m)
+        tide_m: cols[17],    // 조위 (LS, 단위: m) -> 잦은 고장으로 -99.0(결측)이 잦음
+        raw: cols            // 디버그 및 추가 확장을 위한 원본 배열 보존
+      };
+    }
+
+    /**
+     * 메인 비동기 데이터 융합 함수
+     * @param {string} regionKey - virtualStationMap.js 에 정의된 권역 키 (예: "Jeju")
+     */
+    async function getIntegratedWeatherData(regionKey) {
+      const stations = VIRTUAL_STATION_MAP[regionKey];
+      if (!stations) {
+        console.error(`권역 키(${regionKey})를 찾을 수 없습니다.`);
+        return;
       }
 
-const myApiUrl = `https://apihub.kma.go.kr/api/typ01/url/kma_lhaws.php?tm=&stn=0&help=1&authKey=${MY_API_KEY}`;
-      getWeatherData(myApiUrl);
-    </script>
+      console.log(`[${regionKey}] 권역 데이터 2중 API 병합 시작...`);
+
+      // 최신 실시간 데이터를 가져오기 위해 시간(tm) 파라미터는 생략하여 호출
+      const seaObsUrl = `https://apihub.kma.go.kr/api/typ01/url/sea_obs.php?stn=0&help=0&authKey=${MY_API_KEY}`;
+      const lhawsUrl = `https://apihub.kma.go.kr/api/typ01/url/kma_lhaws.php?stn=0&help=0&authKey=${MY_API_KEY}`;
+      
+      try {
+        // [성능 최적화] Promise.all을 통해 두 개의 API를 직렬이 아닌 병렬로 동시 호출
+        const [seaObsResponse, lhawsResponse] = await Promise.all([
+          fetch(seaObsUrl), fetch(lhawsUrl)
+        ]);
+
+        if (!seaObsResponse.ok || !lhawsResponse.ok) {
+           throw new Error("API 서버 응답에 문제가 있습니다.");
+        }
+
+        // 기상청 API는 EUC-KR 인코딩을 사용하므로 텍스트 파싱을 위해 ArrayBuffer로 수신
+        const [seaObsBuffer, lhawsBuffer] = await Promise.all([
+          seaObsResponse.arrayBuffer(), lhawsResponse.arrayBuffer()
+        ]);
+
+        // TextDecoder를 사용하여 EUC-KR 바이너리를 UTF-8 한글 문자열로 변환
+        const decoder = new TextDecoder('euc-kr');
+        const seaObsText = decoder.decode(seaObsBuffer);
+        const lhawsText = decoder.decode(lhawsBuffer);
+
+        // 주석('#'으로 시작) 및 빈 줄을 제거하여 순수 데이터 라인만 필터링
+        const seaObsLines = seaObsText.split('\n').filter(line => line.trim() !== '' && !line.startsWith('#'));
+        const lhawsLines = lhawsText.split('\n').filter(line => line.trim() !== '' && !line.startsWith('#'));
+
+        // 권역 내 정의된 각 관측소(spot)별로 데이터를 순회하며 조립
+        for (const station of stations) {
+          const mergedData = {
+            spotName: station.spotName,
+            // 해양종합관측: 파고/수온 베이스 데이터 세팅
+            waveData: findSeaObsData(seaObsLines, station.waveStation.tp, station.waveStation.keyword),
+            // 해양종합관측: 기온/풍속 베이스 데이터 세팅
+            tideData: findSeaObsData(seaObsLines, station.tideStation.tp, station.tideStation.keyword),
+            // 등표기상관측: 유의파고 및 조위 베이스 데이터 세팅 (ID 매칭)
+            lhawsData: findLhawsData(lhawsLines, station.lhawsId) 
+          };
+
+          // 최종 조립된 가상 관측소 객체 출력
+          console.log(`[${station.spotName}] 데이터 조립 완료:`, mergedData);
+        }
+      } catch (error) {
+        console.error(`데이터 병합 중 에러 발생:`, error);
+      }
+    }
+
+    // 제주도 권역 테스트 실행
+    getIntegratedWeatherData("Jeju");
+  </script>
 </body>
 </html>
