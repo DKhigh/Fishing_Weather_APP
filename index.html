@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>권역별 해양기상 데이터 다중 API 병합 테스트</title>
+    <title>권역별 해양기상 데이터 다중 API 병합 테스트 (전국)</title>
 </head>
 <body>
-  <h1>권역별 기상 데이터 병합 테스트</h1>
+  <h1>전국 권역 기상 데이터 병합 테스트</h1>
     
   <script src="apikey.js"></script>
   <script src="virtualStationMap.js"></script>
@@ -49,17 +49,15 @@
         }
 
         const rawText = await response.text();
-        
-        // 원본 데이터 파싱
         const data = JSON.parse(rawText);
         
-        // [수정 완료] 실제 응답 구조에 맞춰 response를 제거하고 header에 바로 접근합니다.
+        // 실제 응답 구조에 맞춰 response를 제거하고 header에 바로 접근합니다.
         const resultCode = data?.header?.resultCode;
-        if (resultCode && resultCode !== "00") {
+        if (resultCode !== "00") {
           console.warn(`[KHOA API 경고] 관측소(${obsCode}) 응답 코드: ${resultCode} / 메시지: ${data?.header?.resultMsg}`);
         }
         
-        // [수정 완료] 실제 응답 구조에 맞춰 response를 제거하고 body에 바로 접근합니다.
+        // 실제 응답 구조에 맞춰 response를 제거하고 body에 바로 접근합니다.
         const items = data?.body?.items?.item;
         
         if (items && items.length > 0) {
@@ -70,7 +68,7 @@
             obsCode: obsCode,
             obsvtrNm: latestData.obsvtrNm,
             obsrvnDt: latestData.obsrvnDt,
-            bscTdlvHgt: latestData.bscTdlvHgt // 실측조위 (단위: cm) [cite: 3]
+            bscTdlvHgt: latestData.bscTdlvHgt // 실측조위 (단위: cm)
           };
         }
         
@@ -82,20 +80,15 @@
     }
 
     /**
-     * 메인 비동기 데이터 융합 함수
-     * @param {string} regionKey - virtualStationMap.js 에 정의된 권역 키 (예: "Jeju")
+     * 메인 비동기 데이터 융합 함수 (전국 데이터 순회 처리로 확장)
+     * @description 기상청 API를 1회만 호출하여 자원을 최적화하고, 가상 관측소 맵의 모든 권역을 순회합니다.
      */
-    async function getIntegratedWeatherData(regionKey) {
-      const stations = VIRTUAL_STATION_MAP[regionKey];
-      if (!stations) {
-        console.error(`권역 키(${regionKey})를 찾을 수 없습니다.`);
-        return;
-      }
+    async function getAllIntegratedWeatherData() {
+      console.log(`[시스템] 전국 해양 기상 데이터 병합 프로세스 시작...`);
 
-      console.log(`[${regionKey}] 권역 데이터 파싱 시작...`);
-
-      // 기상청 API 호출 설정
+      // 1. 기상청 API 1회 호출 설정 (전국 데이터 수신)
       const seaObsUrl = `https://apihub.kma.go.kr/api/typ01/url/sea_obs.php?stn=0&help=0&authKey=${MY_API_KEY}`;
+      let seaObsLines = [];
       
       try {
         const seaObsResponse = await fetch(seaObsUrl);
@@ -108,10 +101,24 @@
         const decoder = new TextDecoder('euc-kr');
         const seaObsText = decoder.decode(seaObsBuffer);
 
-        const seaObsLines = seaObsText.split('\n').filter(line => line.trim() !== '' && !line.startsWith('#'));
+        seaObsLines = seaObsText.split('\n').filter(line => line.trim() !== '' && !line.startsWith('#'));
+        console.log(`[시스템] 기상청 전국 해양 데이터 로드 및 파싱 완료.`);
+      } catch (error) {
+        console.error(`기상청 데이터 페치 중 에러 발생:`, error);
+        return; // 베이스 데이터가 없으면 프로세스 중단
+      }
 
+      // 2. 가상 관측소 맵의 모든 권역(Region)을 순회
+      for (const regionKey in VIRTUAL_STATION_MAP) {
+        console.log(`\n=========================================`);
+        console.log(`[${regionKey}] 권역 데이터 처리 시작...`);
+        console.log(`=========================================`);
+
+        const stations = VIRTUAL_STATION_MAP[regionKey];
+
+        // 3. 해당 권역 내의 모든 관측소(Station)를 순회
         for (const station of stations) {
-          // 국립해양조사원 API 개별 호출 (가상 관측소 맵의 tideObsCode 활용)
+          // 국립해양조사원 API 개별 호출 (공공데이터포털 과부하 방지를 위해 순차적 await 처리)
           const khoaTideData = await fetchKhoaTideData(station.tideObsCode);
 
           const mergedData = {
@@ -121,15 +128,41 @@
             khoaTideData: khoaTideData
           };
 
-          console.log(`[${station.spotName}] 데이터 조립 완료:`, mergedData);
+          console.log(`\n[${station.spotName}] 데이터 조립 완료:`);
+
+          // 기상청 API 배열에서 공백 및 누락값 제거 후 안전하게 가져오는 헬퍼 함수
+          const getKmaVal = (arr, idx) => {
+            if (!arr || !arr[idx]) return null;
+            const val = arr[idx].trim();
+            // 결측치 데이터를 명시적으로 필터링 처리
+            return (val === 'null' || val === '-' || val === '' || val === '-99.0' || val === '-99') ? null : val;
+          };
+
+          // 로그 분석 결과에 따른 정확한 인덱스 재매핑
+          const waterTemp = getKmaVal(mergedData.waveData, 10) || getKmaVal(mergedData.tideData, 10);
+          const windSpeed = getKmaVal(mergedData.tideData, 8) || getKmaVal(mergedData.waveData, 8);
+          const windDirection = getKmaVal(mergedData.tideData, 7) || getKmaVal(mergedData.waveData, 7);
+          const waveHeight = getKmaVal(mergedData.waveData, 6);
+          const tideLevel = mergedData.khoaTideData?.bscTdlvHgt;
+          const airTemp = getKmaVal(mergedData.tideData, 11) || getKmaVal(mergedData.waveData, 11);
+          const seaPressure = getKmaVal(mergedData.tideData, 12) || getKmaVal(mergedData.waveData, 12);
+
+          // 구분된 데이터 개별 출력
+          console.log(`   └─ 수온: ${waterTemp ? waterTemp + ' ℃' : '자료없음'}`);
+          console.log(`   └─ 풍속: ${windSpeed ? windSpeed + ' m/s' : '자료없음'}`);
+          console.log(`   └─ 풍향: ${windDirection ? windDirection + ' °' : '자료없음'}`);
+          console.log(`   └─ 유의파고: ${waveHeight ? waveHeight + ' m' : '자료없음'}`);
+          console.log(`   └─ 조위: ${tideLevel ? tideLevel + ' cm' : '자료없음'}`);
+          console.log(`   └─ 기온: ${airTemp ? airTemp + ' ℃' : '자료없음'}`);
+          console.log(`   └─ 해면기압: ${seaPressure ? seaPressure + ' hPa' : '자료없음'}`);
         }
-      } catch (error) {
-        console.error(`데이터 병합 중 에러 발생:`, error);
       }
+      
+      console.log(`\n[시스템] 전국 해양 기상 데이터 병합 프로세스 종료.`);
     }
 
-    // 제주도 권역 테스트 실행
-    getIntegratedWeatherData("Jeju");
+    // 전국 권역 테스트 실행
+    getAllIntegratedWeatherData();
   </script>
 </body>
 </html>
