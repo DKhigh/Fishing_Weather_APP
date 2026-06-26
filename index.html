@@ -4,78 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>권역별 해양기상 데이터 다중 API 병합 테스트 (전국)</title>
-  <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-    html, body {
-        width: 100%;
-        height: 100%;
-        overflow: hidden; 
-        background-color: #f9fafb;
-        display: flex;
-        flex-direction: column;
-    }
-
-    header {
-        width: 100%;
-        height: 60px;
-        background-color: #ffffff;
-        align-items: center;
-        padding: 0 24px;
-        position: relative;
-        z-index: 10;
-        border-bottom: 1px solid #f2f4f6;
-    }
-
-    .header-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: black;
-        margin-top: 10%;
-        margin-bottom: 10%;
-    }
-
-    .content-container {
-        flex: 1; 
-        width: 100%;
-        height: calc(100% - 60px); 
-        display: flex;
-        justify-content: center;
-        /* 🛠️ 수정 1: 컨테이너 내부의 flex 정렬을 풀고 일반 블록 흐름으로 제어 */
-        display: block; 
-        /* 🛠️ 수정 2: 토스풍 여백을 주되 상단 여백은 0으로 하여 헤더에 밀착 */
-        padding: 0 24px 24px 24px; 
-    }
-
-    object {
-        /* 🛠️ 수정 3: 가로 폭은 화면에 꽉 맞춥니다 */
-        width: 100%;
-        /* 🛠️ 수정 4: 높이를 고정(100%)하지 않고 최대 높이 제한 속성만 부여합니다 */
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-        display: block;
-        /* 🛠️ 수정 5: 정렬 속성을 제거하여 가로 폭에 맞게 위에서부터 꽉 채우도록 유도 */
-        margin: 0 auto; 
-    }
-        
-    .location {
-        padding: 2%;
-        margin-top: 10%;
-        margin-bottom: 10%;;
-    }
-  </style>
+  <link rel="stylesheet" href="css\style.css">
 </head>
 <body>
   <h1>전국 권역 기상 데이터 병합 테스트</h1>
-    
+  <header>
+    <div><span class="header-title">낚시 지도 맵</span></div>
+    <span class="location">🚩</span><span class="location" id="gps">경상남도 창원시 진해구</span>
+  </header>
+
+  <main class="content-container">
+    <object id="SvgObject" data="JidoV0.3.svg" type="image/svg+xml"></object>
+    <aside id="BottomSheet" class="sheet" aria-hidden="true">
+        <button id="CloseSheetBtn" style="float: right; margin: 10px;">X</button>
+        <article id="SheetArticle">
+            <div id="SheetContent">
+                <h2>권역별 해양기상 데이터</h2>
+                <p>이곳에 권역별 해양기상 데이터를 표시합니다.</p>
+            </div>
+        </article>
+    </aside>
+    <script>
+        window.changeSVGUrl = function(newUrl) {
+            const obj = document.getElementById('svgObject');
+            if(obj) {
+                obj.data = newUrl;
+            };
+        };
+    </script>
+  </main>
   <script src="js\apikey.js"></script>
   <script src="js\virtualStationMap.js"></script>
   <script src="js\dataDisplay.js"></script>
