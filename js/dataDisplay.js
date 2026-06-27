@@ -133,6 +133,17 @@ async function fetchKhoaTideData(obsCode) {
           const airTemp = getKmaVal(mergedData.tideData, 11) || getKmaVal(mergedData.waveData, 11);
           const seaPressure = getKmaVal(mergedData.tideData, 12) || getKmaVal(mergedData.waveData, 12);
 
+          // 전역 객체(창고)에 데이터 저장하기
+          window.GlobalOceanData[station.spotName] = {
+                WaterTemp: waterTemp ? waterTemp + ' ℃' : '자료없음',
+                WindSpeed: windSpeed ? windSpeed + ' m/s' : '자료없음',
+                WindDirection: windDirection ? windDirection + ' °' : '자료없음',
+                WaveHeight: waveHeight ? waveHeight + ' m' : '자료없음',
+                TideLevel: tideLevel ? tideLevel + ' cm' : '자료없음',
+                AirTemp: airTemp ? airTemp + ' ℃' : '자료없음',
+                SeaPressure: seaPressure ? seaPressure + ' hPa' : '자료없음'
+            };
+
           // 구분된 데이터 개별 출력
           console.log(`   └─ 수온: ${waterTemp ? waterTemp + ' ℃' : '자료없음'}`);
           console.log(`   └─ 풍속: ${windSpeed ? windSpeed + ' m/s' : '자료없음'}`);
@@ -145,6 +156,9 @@ async function fetchKhoaTideData(obsCode) {
       }
       
       console.log(`\n[시스템] 전국 해양 기상 데이터 병합 프로세스 종료.`);
+      // main.js에 데이터가 다 찼다는 신호를 보냄
+      const event = new CustomEvent('dataReady');
+      window.dispatchEvent(event);
     }
 
     // 전국 권역 테스트 실행

@@ -921,7 +921,7 @@
           <text class="cls-32" transform="translate(417.76 158.33)"><tspan x="0" y="0">강릉/주문진</tspan></text>
         </g>
       </g>
-      <g id="sokchoG">
+      <g id="sokchoG" class="FishSpot" data-spot="속초/고성권">
         <rect id="sokchoB" class="cls-21" x="365.66" y="75.55" width="50.33" height="17.26" rx="5.51" ry="5.51"/>
         <g id="sokchoLtr-2" data-name="sokchoLtr">
           <text class="cls-32" transform="translate(370.16 87.41)"><tspan x="0" y="0">속초/고성</tspan></text>
