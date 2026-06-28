@@ -129,3 +129,94 @@ object {
 #BottomSheet.Show {
     transform: translateY(0);
 }
+
+.sheet {
+    max-height: 70vh; /* 최대 높이를 화면의 70%로 제한 */
+    display: flex;
+    flex-direction: column;
+}
+
+.SheetHeader {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.SheetContent {
+    padding: 15px;
+    overflow-y: auto; /* 내용이 많으면 스크롤 가능 */
+    flex: 1; /* 남은 공간을 차지하도록 설정 */
+}
+
+#CloseSheetBtn {
+    position: absolute; /* 주변 글자들을 무시하고 절대적인 위치로 띄움 */
+    top: 20px;          /* 바텀 시트 맨 위에서부터 20px 띄움 */
+    right: 20px;        /* 바텀 시트 오른쪽 끝에서부터 20px 띄움 */
+}
+
+.CloseBtn {
+    background: none;       /* 배경 투명하게 */
+    border: none;           /* 테두리 없애기 */
+    font-size: 20px;        /* 폰트 크기 */
+    font-weight: bold;      /* 폰트 두께 */
+    color: #333;            /* 글자 색상 */
+    cursor: pointer;        /* 마우스 올리면 손가락 모양 */
+    padding: 5px 10px;      /* 터치하기 편하게 여백 주기 */
+}
+
+/* 사이드 시트 전체 틀 (위아래 꽉 채우고 완전히 숨기기)*/
+.SideSheet {
+    position: fixed;
+    top: 0;
+    right: 0;           /* 🌟 중요: left 대신 right: 0으로 설정하여 우측에 밀착시킵니다. */
+    width: 80%;         /* 모바일 화면 너비의 80% 차지 */
+    max-width: 300px;   /* 태블릿이나 PC에서 너무 넓어지지 않도록 방지 */
+    
+    height: 100vh;      /* 🌟 요구사항: 100% 대신 100vh를 쓰면 상단 바를 포함해 위아래로 완전히 꽉 찹니다! */
+    
+    background-color: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* 왼쪽에 은은한 그림자를 주어 입체감 부여 */
+    z-index: 1000;      /* 지도나 헤더보다 무조건 위에 뜨도록 최상단 배치 */
+    
+    /* 🌟 중요: 평소에는 우측 화면 밖으로 자신의 너비만큼(100%) 완전히 밀어내어 완벽히 숨깁니다. */
+    transform: translateX(100%); 
+    transition: transform 0.3s ease-in-out; /* 0.3초 동안 부드럽게 스르륵 열리는 애니메이션 */
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.SideSheet.Show {
+    /* 🌟 중요: Show 클래스가 붙으면 transform을 0으로 바꿔 화면 안으로 들어오도록 합니다. */
+    transform: translateX(0);
+}
+
+/* --- 뱡향 조절용 참고 (만약 왼쪽에서 나오게 바꾸고 싶다면?) ---
+만약 나중에 왼쪽에서 나오게 바꾸고 싶다면 아래처럼 세트만 바꿔주면 됩니다!
+right: 0; transform: translateX(100%);  -> 우측 정렬 & 우측 숨김 (현재 세팅)
+left: 0;  transform: translateX(-100%); -> 좌측 정렬 & 좌측 숨김
+-------------------------------------------------- */
+
+
+/* --- 內 내부 구조 디자인 (기존과 동일) --- */
+.SideSheet .SheetHeader {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.SideSheet .CloseBtn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.SideSheet .SheetContent {
+    padding: 20px;
+    overflow-y: auto; /* 내용이 길어지면 바텀시트처럼 내부 스크롤 생성 */
+    flex: 1;
+}

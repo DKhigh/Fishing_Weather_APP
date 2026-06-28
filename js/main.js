@@ -78,10 +78,31 @@ window.addEventListener('dataReady', () => {
     setupMapEvents();
 });
 
+// 시트 닫기 버튼 로직들 (사이드, 바텀 시트)
+
 // 바텀 시트 닫기(X) 버튼 로직
 const closeBtn = document.getElementById('CloseSheetBtn');
 if (closeBtn) {
     closeBtn.addEventListener('click', function() {
         document.getElementById('BottomSheet').classList.remove('Show');
+    });
+}
+// 사이드 시트 여닫기 로직
+const infoBtn = document.getElementById('InfoBtn');
+const sideSheet = document.getElementById('SideSheet');
+const sideCloseBtn = document.getElementById('SideCloseBtn');
+
+
+// 정보 버튼 클릭 시 사이드 시트 열기
+if (infoBtn) {
+    infoBtn.addEventListener('click', function() {
+        sideSheet.classList.add('Show');
+    });
+}
+
+// 사이드 시트 닫기 버튼 클릭 시 닫기
+if (sideCloseBtn) {
+    sideCloseBtn.addEventListener('click', function() {
+        sideSheet.classList.remove('Show');
     });
 }

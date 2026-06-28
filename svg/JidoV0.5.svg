@@ -782,21 +782,21 @@
   </g>
   <g id="point">
     <g id="SMPoint">
-      <g id="yeongheungG">
+      <g id="yeongheungG" class="FishSpot" data-spot="영흥도/대부도권">
         <rect id="yeongheungB" class="cls-25" x="85.62" y="166.1" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="yeongheungLtr">
           <text class="cls-6" transform="translate(90.81 184.29)"><tspan x="0" y="0">영흥</tspan></text>
           <text class="cls-6" transform="translate(90.81 184.29)"><tspan x="0" y="0">영흥</tspan></text>
         </g>
       </g>
-      <g id="incheonG">
+      <g id="incheonG" class="FishSpot" data-spot="인천항/연안부두권">
         <rect id="incheonB" class="cls-20" x="66.91" y="131.57" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="incheonLtr-2" data-name="incheonLtr">
           <text class="cls-1" transform="translate(72.36 149.88)"><tspan x="0" y="0">인천</tspan></text>
           <text class="cls-1" transform="translate(72.36 149.88)"><tspan x="0" y="0">인천</tspan></text>
         </g>
       </g>
-      <g id="gughwaG">
+      <g id="gughwaG" class="FishSpot" data-spot="국화도/화성권">
         <rect id="gughwaB" class="cls-17" x="99.46" y="199.72" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="gughwaLtr">
           <text class="cls-4" transform="translate(101.78 217.57)"><tspan x="0" y="0">국화도</tspan></text>
@@ -805,21 +805,21 @@
       </g>
     </g>
     <g id="CNPoint">
-      <g id="taeanG">
+      <g id="taeanG" class="FishSpot" data-spot="태안/안면도권">
         <rect id="taeanB" class="cls-16" x="54.54" y="266.95" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="taeanLtr-2" data-name="taeanLtr">
           <text class="cls-2" transform="translate(59.66 285.18)"><tspan x="0" y="0">태안</tspan></text>
           <text class="cls-2" transform="translate(59.66 285.18)"><tspan x="0" y="0">태안</tspan></text>
         </g>
       </g>
-      <g id="boryeongG">
+      <g id="boryeongG" class="FishSpot" data-spot="보령/오천항권">
         <rect id="boryeongB" class="cls-23" x="69.54" y="300.37" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="boryeongLtr-2" data-name="boryeongLtr">
           <text class="cls-2" transform="translate(75.44 318.63)"><tspan x="0" y="0">보령</tspan></text>
           <text class="cls-2" transform="translate(75.44 318.63)"><tspan x="0" y="0">보령</tspan></text>
         </g>
       </g>
-      <g id="seocheonG">
+      <g id="seocheonG" class="FishSpot" data-spot="서천/홍원항권">
         <rect id="seocheonB" class="cls-31" x="80.75" y="333.79" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="seocheonLtr-2" data-name="seocheonLtr">
           <text class="cls-2" transform="translate(86.43 352.07)"><tspan x="0" y="0">서천</tspan></text>
@@ -828,21 +828,21 @@
       </g>
     </g>
     <g id="JBPoint">
-      <g id="gunsanG">
+      <g id="gunsanG" class="FishSpot" data-spot="군산/비응항권">
         <rect id="gunsanB" class="cls-29" x="83.99" y="367.8" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="gunsanLtr-2" data-name="gunsanLtr">
           <text class="cls-2" transform="translate(89.33 386.17)"><tspan x="0" y="0">군산</tspan></text>
           <text class="cls-2" transform="translate(89.33 386.17)"><tspan x="0" y="0">군산</tspan></text>
         </g>
       </g>
-      <g id="buanG">
+      <g id="buanG" class="FishSpot" data-spot="부안/격포항권">
         <rect id="buanB" class="cls-22" x="65.55" y="401.02" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="buanLtr-2" data-name="buanLtr">
           <text class="cls-2" transform="translate(70.89 419.32)"><tspan x="0" y="0">부안</tspan></text>
           <text class="cls-2" transform="translate(70.89 419.32)"><tspan x="0" y="0">부안</tspan></text>
         </g>
       </g>
-      <g id="gochangG">
+      <g id="gochangG" class="FishSpot" data-spot="고창/구시포권">
         <rect id="gochangB" class="cls-18" x="50.55" y="435.78" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="gochangLtr-2" data-name="gochangLtr">
           <text class="cls-2" transform="translate(55.89 454.04)"><tspan x="0" y="0">고창</tspan></text>
@@ -851,21 +851,21 @@
       </g>
     </g>
     <g id="JNPoint">
-      <g id="mokpoG">
+      <g id="mokpoG" class="FishSpot" data-spot="목포/압해도권">
         <rect id="mokpoB" class="cls-33" x="46.32" y="520.67" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="mokpoLtr-2" data-name="mokpoLtr">
           <text class="cls-2" transform="translate(51.73 538.8)"><tspan x="0" y="0">목포</tspan></text>
           <text class="cls-2" transform="translate(51.73 538.8)"><tspan x="0" y="0">목포</tspan></text>
         </g>
       </g>
-      <g id="wandoG">
+      <g id="wandoG" class="FishSpot" data-spot="완도/신지도권">
         <rect id="wandoB" class="cls-35" x="137.88" y="561.78" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="wandoLtr-2" data-name="wandoLtr">
           <text class="cls-2" transform="translate(143.22 580.15)"><tspan x="0" y="0">완도</tspan></text>
           <text class="cls-2" transform="translate(143.22 580.15)"><tspan x="0" y="0">완도</tspan></text>
         </g>
       </g>
-      <g id="yeosuG">
+      <g id="yeosuG" class="FishSpot" data-spot="여수/돌산권">
         <rect id="yeosuB" class="cls-32" x="201.26" y="534.26" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="yeosuLtr-2" data-name="yeosuLtr">
           <text class="cls-2" transform="translate(206.41 552.54)"><tspan x="0" y="0">여수</tspan></text>
@@ -874,21 +874,21 @@
       </g>
     </g>
     <g id="GNPoint">
-      <g id="namhaeG">
+      <g id="namhaeG" class="FishSpot" data-spot="남해/삼천포권">
         <rect id="namhaeB" class="cls-11" x="231.59" y="485.43" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="namhaeLtr-2" data-name="namhaeLtr">
           <text class="cls-2" transform="translate(236.9 503.71)"><tspan x="0" y="0">남해</tspan></text>
           <text class="cls-2" transform="translate(236.9 503.71)"><tspan x="0" y="0">남해</tspan></text>
         </g>
       </g>
-      <g id="geojaeG">
+      <g id="geojaeG" class="FishSpot" data-spot="거제/통영권">
         <rect id="geojaeB" class="cls-15" x="305.16" y="519.88" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="geojaeLtr">
           <text class="cls-2" transform="translate(310.66 538.16)"><tspan x="0" y="0">거제</tspan></text>
           <text class="cls-2" transform="translate(310.66 538.16)"><tspan x="0" y="0">거제</tspan></text>
         </g>
       </g>
-      <g id="busanG">
+      <g id="busanG" class="FishSpot" data-spot="부산/진해권">
         <rect id="busanB" class="cls-19" x="341.01" y="469" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="busanLtr-2" data-name="busanLtr">
           <text class="cls-2" transform="translate(346.35 487.31)"><tspan x="0" y="0">부산</tspan></text>
@@ -897,21 +897,21 @@
       </g>
     </g>
     <g id="GBPoint">
-      <g id="pohangG">
+      <g id="pohangG" class="FishSpot" data-spot="포항/영일만권">
         <rect id="pohangB" class="cls-26" x="413.45" y="330.49" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="pohangLtr-2" data-name="pohangLtr">
           <text class="cls-2" transform="translate(418.79 348.75)"><tspan x="0" y="0">포항</tspan></text>
           <text class="cls-2" transform="translate(418.79 348.75)"><tspan x="0" y="0">포항</tspan></text>
         </g>
       </g>
-      <g id="uljinG">
+      <g id="uljinG" class="FishSpot" data-spot="울진/후포항권">
         <rect id="uljinB" class="cls-14" x="414.87" y="219.11" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="uljinLtr-2" data-name="uljinLtr">
           <text class="cls-2" transform="translate(420.66 237.47)"><tspan x="0" y="0">울진</tspan></text>
           <text class="cls-2" transform="translate(420.66 237.47)"><tspan x="0" y="0">울진</tspan></text>
         </g>
       </g>
-      <g id="yeongdeokG">
+      <g id="yeongdeokG" class="FishSpot" data-spot="영덕/강구항권">
         <rect id="yeongdeokB" class="cls-27" x="414.87" y="280.02" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="yeongdeokLtr-2" data-name="yeongdeokLtr">
           <text class="cls-2" transform="translate(420.51 298.27)"><tspan x="0" y="0">영덕</tspan></text>
@@ -920,21 +920,21 @@
       </g>
     </g>
     <g id="GWPoint">
-      <g id="samcheokG">
+      <g id="samcheokG" class="FishSpot" data-spot="삼척/임원항권">
         <rect id="samcheokB" class="cls-24" x="397.67" y="164.58" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="samcheokLtr-2" data-name="samcheokLtr">
           <text class="cls-2" transform="translate(403.5 182.83)"><tspan x="0" y="0">삼척</tspan></text>
           <text class="cls-2" transform="translate(403.5 182.83)"><tspan x="0" y="0">삼척</tspan></text>
         </g>
       </g>
-      <g id="gangneungG">
+      <g id="gangneungG" class="FishSpot" data-spot="강릉/주문진권">
         <rect id="gangneungB" class="cls-21" x="365.14" y="101.55" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="gangneungLtr-2" data-name="gangneungLtr">
           <text class="cls-2" transform="translate(370.34 119.79)"><tspan x="0" y="0">강릉</tspan></text>
           <text class="cls-2" transform="translate(370.34 119.79)"><tspan x="0" y="0">강릉</tspan></text>
         </g>
       </g>
-      <g id="sokchoG">
+      <g id="sokchoG" class="FishSpot" data-spot="속초/고성권">
         <rect id="sokchoB" class="cls-28" x="326.14" y="46.55" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="sokchoLtr-2" data-name="sokchoLtr">
           <text class="cls-2" transform="translate(331.55 64.77)"><tspan x="0" y="0">속초</tspan></text>
@@ -942,7 +942,7 @@
         </g>
       </g>
     </g>
-    <g id="JJPoint">
+    <g id="JJPoint" class="FishSpot" data-spot="제주항/북부권">
       <g id="jejuhangG">
         <rect id="jejuhangB" class="cls-30" x="370.61" y="561.97" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="jejuhangLtr">
@@ -950,21 +950,21 @@
           <text class="cls-4" transform="translate(372.84 579.85)"><tspan x="0" y="0">제주항</tspan></text>
         </g>
       </g>
-      <g id="seogwipoG">
+      <g id="seogwipoG" class="FishSpot" data-spot="서귀포/남부권">
         <rect id="seogwipoB" class="cls-9" x="370.61" y="620.12" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="seogwipoLtr">
           <text class="cls-4" transform="translate(372.82 638.01)"><tspan x="0" y="0">서귀포</tspan></text>
           <text class="cls-4" transform="translate(372.82 638.01)"><tspan x="0" y="0">서귀포</tspan></text>
         </g>
       </g>
-      <g id="sungsanpoG">
+      <g id="sungsanpoG" class="FishSpot" data-spot="성산포/동부권">
         <rect id="sungsanpoB" class="cls-12" x="435.62" y="589.23" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="sungsanpoLtr">
           <text class="cls-4" transform="translate(437.8 607.1)"><tspan x="0" y="0">성산포</tspan></text>
           <text class="cls-4" transform="translate(437.8 607.1)"><tspan x="0" y="0">성산포</tspan></text>
         </g>
       </g>
-      <g id="moseulpoG">
+      <g id="moseulpoG" class="FishSpot" data-spot="모슬포/서부권">
         <rect id="moseulpoB" class="cls-13" x="314.45" y="589.23" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="moseulpoLtr">
           <text class="cls-4" transform="translate(316.76 607.19)"><tspan x="0" y="0">모슬포</tspan></text>
