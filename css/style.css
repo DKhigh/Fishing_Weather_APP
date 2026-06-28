@@ -24,46 +24,46 @@ header {
     padding: 0;
 }
 header button{
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-        }
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
 
-        .headerCenter{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
-        }
+.headerCenter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
 
-        .locationBar{
-            width: 100%;
-            background-color: #f9fafb;
-            display: flex;
-            justify-content: center;
-            padding: 5px 0 5px 0;
-            border-bottom: 1px solid #f2f4f6;
-        }
+.locationBar{
+    width: 100%;
+    background-color: #f9fafb;
+    display: flex;
+    justify-content: center;
+    padding: 5px 0 5px 0;
+    border-bottom: 1px solid #f2f4f6;
+}
 
-        .pillBox{
-            background-color: #f2f4f6;
-            color: #4e5968;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 6px 16px;
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+.pillBox{
+    background-color: #f2f4f6;
+    color: #4e5968;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
 .header-title {
     font-size: 18px;
     font-weight: 700;
@@ -72,28 +72,28 @@ header button{
     margin-bottom: 10%;
 }
 .contentContainer {
-            flex: 1; 
-            width: 100%;
-            height: calc(100% - 75px); 
-            display: flex;
-            justify-content: center;
-            /* 🛠️ 수정 1: 컨테이너 내부의 flex 정렬을 풀고 일반 블록 흐름으로 제어 */
-            align-items: flex-start;
-            /* 🛠️ 수정 2: 토스풍 여백을 주되 상단 여백은 0으로 하여 헤더에 밀착 */
-            padding: 0 24px 24px 24px; 
+    flex: 1; 
+    width: 100%;
+    height: calc(100% - 75px); 
+    display: flex;
+    justify-content: center;
+    /* 🛠️ 수정 1: 컨테이너 내부의 flex 정렬을 풀고 일반 블록 흐름으로 제어 */
+    align-items: flex-start;
+    /* 🛠️ 수정 2: 토스풍 여백을 주되 상단 여백은 0으로 하여 헤더에 밀착 */
+    padding: 0 24px 24px 24px; 
 }
 
 object {
-            /* 🛠️ 수정 3: 가로 폭은 화면에 꽉 맞춥니다 */
-            width: 100%;
-            /* 🛠️ 수정 4: 높이를 고정(100%)하지 않고 최대 높이 제한 속성만 부여합니다 */
-            height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-            display: block;
-            /* 🛠️ 수정 5: 정렬 속성을 제거하여 가로 폭에 맞게 위에서부터 꽉 채우도록 유도 */
-            object-fit: contain;
-            object-position: top center;
+    /* 🛠️ 수정 3: 가로 폭은 화면에 꽉 맞춥니다 */
+    width: 100%;
+    /* 🛠️ 수정 4: 높이를 고정(100%)하지 않고 최대 높이 제한 속성만 부여합니다 */
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    /* 🛠️ 수정 5: 정렬 속성을 제거하여 가로 폭에 맞게 위에서부터 꽉 채우도록 유도 */
+    object-fit: contain;
+    object-position: top center;
 }
         
 .location {
@@ -103,10 +103,10 @@ object {
 }
 
 .textIcon{
-            width: 25px;
-            height: 25px;
-            vertical-align: middle;
-            margin-right: 4px;
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+    margin-right: 4px;
 }
 
 /* 바텀 시트 기본 상태 (화면 아래에 숨김) */

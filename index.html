@@ -9,15 +9,15 @@
 <body>
   <h1>전국 권역 기상 데이터 병합 테스트</h1>
   <header>
-    <button aria-label=home">
-      <img src="homeButton.svg" alt="appIcon" class="textIcon">
+    <button aria-label="home">
+      <img src="svg/homeButton.svg" alt="appIcon" class="textIcon">
     </button>
     <div class="headerCenter">
-      <img src="appLogo.svg" alt="appIcon" class="textIcon">
+      <img src="svg/appLogo.svg" alt="appIcon" class="textIcon">
       <span>바다보기</span>
     </div>
     <button aria-label="info">
-      <img src="infoButton.svg" alt="appIcon" class="textIcon">
+      <img src="svg/infoButton.svg" alt="appIcon" class="textIcon">
     </button>
   </header>
 
@@ -28,11 +28,14 @@
     </div>
   </div>
 
-  <main class="content-container">
+  <main class="contentContainer">
     <object id="svgObject" data="svg/JidoV0.5.svg" type="image/svg+xml"></object>
 
     <aside id="BottomSheet" class="sheet" aria-hidden="true">
+      <div class="SheetHeader">
+        <h3></h3>
         <button id="CloseSheetBtn" style="float: right; margin: 10px;">X</button>
+      </div>
         <article id="SheetArticle">
             <div id="SheetContent">
                 <h2>권역별 해양기상 데이터</h2>
@@ -55,11 +58,5 @@
   <script src="js\dataDisplay.js"></script>
   <script src="js\mapData.js"></script>
   <script src="js\main.js"></script>
-  <!-- 웹에서는 이렇게 해야 인식하더라.. -->
-  <script src="js/apikey.js"></script>
-  <script src="js/virtualStationMap.js"></script>
-  <script src="js/dataDisplay.js"></script>
-  <script src="js/mapData.js"></script>
-  <script src="js/main.js"></script>
 </body>
 </html>
