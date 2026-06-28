@@ -9,12 +9,28 @@
 <body>
   <h1>전국 권역 기상 데이터 병합 테스트</h1>
   <header>
-    <div><span class="header-title">낚시 지도 맵</span></div>
-    <span class="location">🚩</span><span class="location" id="gps">경상남도 창원시 진해구</span>
+    <button aria-label=home">
+      <img src="homeButton.svg" alt="appIcon" class="textIcon">
+    </button>
+    <div class="headerCenter">
+      <img src="appLogo.svg" alt="appIcon" class="textIcon">
+      <span>바다보기</span>
+    </div>
+    <button aria-label="info">
+      <img src="infoButton.svg" alt="appIcon" class="textIcon">
+    </button>
   </header>
 
+  <div class="locationBar">
+    <div class="pillBox">
+      <span>🚩</span>
+      <span>경상남도 창원시 의창구</span>
+    </div>
+  </div>
+
   <main class="content-container">
-    <object id="SvgObject" data="JidoV0.3.svg" type="image/svg+xml"></object>
+    <object id="svgObject" data="svg/JidoV0.5.svg" type="image/svg+xml"></object>
+
     <aside id="BottomSheet" class="sheet" aria-hidden="true">
         <button id="CloseSheetBtn" style="float: right; margin: 10px;">X</button>
         <article id="SheetArticle">
