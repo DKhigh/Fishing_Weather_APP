@@ -1,5 +1,5 @@
 // 1. 지도 오브젝트 태그 가져오기
-const MapObject = document.getElementById("SvgObject");
+const MapObject = document.getElementById("svgObject");
 
 // 중복으로 클릭 귀(Event Listener)가 달리는 것을 막는 자물쇠 변수
 let isEventAttached = false;
