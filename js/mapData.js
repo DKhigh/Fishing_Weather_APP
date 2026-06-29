@@ -1,60 +1,112 @@
 /**
- * ==========================================
- * 지도 바텀 시트를 위한 전국 데이터 사전 적재
- * (dataDisplay.js 도구들을 활용함)
- * ==========================================
+ * 지도 바텀 시트를 위한 전국 해양 데이터 사전 적재 스크립트
+ * dataDisplay.js에 정의된 통신 및 파싱 함수들을 재사용하여 전국 데이터를 미리 불러옴
  */
 async function loadAllMapData() {
-    // 1. 지도 클릭용 데이터 창고 초기화
+    // 1. 지도 클릭 시 참조할 전역 데이터 객체(창고)를 초기화함
     window.GlobalOceanData = {};
 
-    // 2. 친구가 만든 캐싱 시스템(dataDisplay.js)이 켜질 때까지 대기
+    // 2. dataDisplay.js의 캐싱 시스템이 준비될 때까지 대기함
     if (typeof isInitialized !== 'undefined' && !isInitialized) {
         await initWeatherSystem();
     }
 
-    console.log(`[시스템] 지도 클릭용 전국 해양 데이터 적재 시작...`);
+    console.log("[시스템] 지도 클릭용 전국 해양 데이터 적재 시작...");
 
-    // 3. 지도에 있는 모든 스팟을 돌면서 데이터를 조립하고 창고에 저장
+    // 기상청 데이터의 결측치(null, '-', '-99.0' 등)를 걸러내고 깔끔한 null로 반환하는 내부 헬퍼 함수임
+    const getKmaVal = (arr, idx) => {
+        if (!arr || !arr[idx]) return null;
+        const val = arr[idx].trim();
+        return (val === 'null' || val === '-' || val === '' || val === '-99.0' || val === '-99') ? null : val;
+    };
+
+    let allStationsData = []; // 전국 관측소 데이터를 담을 임시 배열
+
+    // 3. 1차 수집: 지도에 있는 모든 스팟을 돌면서 데이터를 조립하고 위치(lat, lon)를 파악함
     for (const region in VIRTUAL_STATION_MAP) {
         for (const station of VIRTUAL_STATION_MAP[region]) {
-            // 친구가 만든 통신 및 파싱 함수 그대로 재사용!
             const khoaTideData = await fetchKhoaTideData(station.tideObsCode);
             const waveData = findSeaObsData(cachedSeaObsLines, station.waveStation.tp, station.waveStation.keyword);
             const tideData = findSeaObsData(cachedSeaObsLines, station.tideStation.tp, station.tideStation.keyword);
 
-            const getKmaVal = (arr, idx) => {
-                if (!arr || !arr[idx]) return null;
-                const val = arr[idx].trim();
-                return (val === 'null' || val === '-' || val === '' || val === '-99.0' || val === '-99') ? null : val;
-            };
+            // 다른 관측소와의 거리 계산을 위해 현재 관측소의 위도, 경도를 파악함
+            let lat = null, lon = null;
+            if (tideData && tideData[4] && tideData[5]) {
+                lon = parseFloat(tideData[4]);
+                lat = parseFloat(tideData[5]);
+            } else if (waveData && waveData[4] && waveData[5]) {
+                lon = parseFloat(waveData[4]);
+                lat = parseFloat(waveData[5]);
+            }
 
-            const waterTemp = getKmaVal(waveData, 10) || getKmaVal(tideData, 10);
-            const windSpeed = getKmaVal(tideData, 8) || getKmaVal(waveData, 8);
-            const windDirection = getKmaVal(tideData, 7) || getKmaVal(waveData, 7);
-            const waveHeight = getKmaVal(waveData, 6);
-            const tideLevel = khoaTideData?.bscTdlvHgt;
-            const airTemp = getKmaVal(tideData, 11) || getKmaVal(waveData, 11);
-            const seaPressure = getKmaVal(tideData, 12) || getKmaVal(waveData, 12);
-
-            // 🛠️ 우리가 만든 바텀 시트용 창고에 저장!
-            window.GlobalOceanData[station.spotName] = {
-                WaterTemp: waterTemp ? waterTemp + ' ℃' : '자료없음',
-                WindSpeed: windSpeed ? windSpeed + ' m/s' : '자료없음',
-                WindDirection: windDirection ? windDirection + ' °' : '자료없음',
-                WaveHeight: waveHeight ? waveHeight + ' m' : '자료없음',
-                TideLevel: tideLevel ? tideLevel + ' cm' : '자료없음',
-                AirTemp: airTemp ? airTemp + ' ℃' : '자료없음',
-                SeaPressure: seaPressure ? seaPressure + ' hPa' : '자료없음'
-            };
+            allStationsData.push({
+                station: station,
+                lat: lat,
+                lon: lon,
+                waterTemp: getKmaVal(waveData, 10) || getKmaVal(tideData, 10),
+                windSpeed: getKmaVal(tideData, 8) || getKmaVal(waveData, 8),
+                windDirection: getKmaVal(tideData, 7) || getKmaVal(waveData, 7),
+                waveHeight: getKmaVal(waveData, 6),
+                tideLevel: khoaTideData?.bscTdlvHgt,
+                airTemp: getKmaVal(tideData, 11) || getKmaVal(waveData, 11),
+                seaPressure: getKmaVal(tideData, 12) || getKmaVal(waveData, 12)
+            });
         }
     }
 
-    console.log(`[시스템] 지도 클릭용 데이터 적재 완료! 지도를 클릭해보세요.`);
+    // 4. 2차 수집(결측치 보정): 결측치(null)가 있는 경우 가장 가까운 다른 관측소의 데이터로 대체함
+    for (let i = 0; i < allStationsData.length; i++) {
+        let current = allStationsData[i];
+        
+        // 만약 현재 관측소의 좌표를 모른다면 거리 계산이 불가능하여 보정이 어려우므로 넘어감
+        if (current.lat === null || current.lon === null) continue;
+
+        // 현재 관측소를 제외한 다른 관측소들을 거리(distance) 기준으로 오름차순 정렬함
+        let sortedNeighbors = allStationsData
+            .filter((_, idx) => idx !== i && allStationsData[idx].lat !== null)
+            .map(neighbor => {
+                return {
+                    ...neighbor,
+                    dist: getDistance(current.lat, current.lon, neighbor.lat, neighbor.lon)
+                };
+            })
+            .sort((a, b) => a.dist - b.dist);
+
+        // 빈 값을 채워 넣을 대상 데이터 항목들
+        const metrics = ['waterTemp', 'windSpeed', 'windDirection', 'waveHeight', 'tideLevel', 'airTemp', 'seaPressure'];
+         
+        for (const metric of metrics) {
+            if (current[metric] === null) {
+                // 가장 가까운 이웃부터 순회하며 유효한 값이 있는 것을 찾아서 빌려옴
+                for (const neighbor of sortedNeighbors) {
+                    if (neighbor[metric] !== null) {
+                        current[metric] = neighbor[metric];
+                        break; // 해당 항목의 구멍을 메웠으므로 이웃 탐색을 멈추고 다음 항목으로 넘어감
+                    }
+                }
+            }
+        }
+    }
+
+    // 5. 최종 적재: 보정 완료된 데이터를 UI 표출용 포맷에 맞춰 전역 객체(창고)에 저장함
+    for (const item of allStationsData) {
+        window.GlobalOceanData[item.station.spotName] = {
+            WaterTemp: item.waterTemp ? item.waterTemp + ' ℃' : '자료없음',
+            WindSpeed: item.windSpeed ? item.windSpeed + ' m/s' : '자료없음',
+            WindDirection: item.windDirection ? item.windDirection + ' °' : '자료없음',
+            WaveHeight: item.waveHeight ? item.waveHeight + ' m' : '자료없음',
+            TideLevel: item.tideLevel ? item.tideLevel + ' cm' : '자료없음',
+            AirTemp: item.airTemp ? item.airTemp + ' ℃' : '자료없음',
+            SeaPressure: item.seaPressure ? item.seaPressure + ' hPa' : '자료없음'
+        };
+    }
+
+    console.log("[시스템] 지도 클릭용 데이터 적재 완료. 지도를 클릭해 볼 수 있음.");
     
-    // 4. main.js에게 데이터 준비 끝났다고 신호(dataReady) 쏘기!
+    // 6. 모든 데이터 적재가 끝났음을 알리는 커스텀 이벤트를 발생시킴
+    // main.js 등 외부 스크립트에서 이 이벤트를 감지하여 로딩 화면을 제거하는 등의 후속 작업을 진행할 수 있게 함
     window.dispatchEvent(new CustomEvent('dataReady'));
 }
 
-// 파일이 로드되면 바로 전국 데이터를 긁어오는 함수 실행
+// 파일이 브라우저에 로드되자마자 즉시 전국 데이터 수집을 백그라운드에서 시작함
 loadAllMapData();
