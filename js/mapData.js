@@ -110,3 +110,144 @@ async function loadAllMapData() {
 
 // 파일이 브라우저에 로드되자마자 즉시 전국 데이터 수집을 백그라운드에서 시작함
 loadAllMapData();
+
+
+// 낚시 스팟별 & 월별 어종 데이터 하드코딩
+const FishSpotData = {
+    "JJfish" :{
+        name: "제주도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    },
+    "GWfish" :{
+        name: "강원도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    },
+    "GBfish" :{
+        name: "경상북도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    },
+    "GNfish" :{
+        name: "경상남도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    },
+    "JNfish" :{
+        name: "전라남도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    },
+    "JBfish" :{
+        name: "전라북도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    },
+    "CNfish" :{
+        name: "충청남도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    },
+    "SMfish" :{
+        name: "경기도 낚시 스팟",
+        FishByMonth: {
+            1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            2: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            3: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            4: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            5: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            6: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            7: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            8: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            9: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            10: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            11: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
+            12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
+        }
+    }
+};

@@ -68,6 +68,38 @@ function setupMapEvents() {
             }
         });
     });
+
+    // 낚시 스팟 클릭 이벤트 설정
+    const FishSpots = SvgDoc.querySelectorAll(".FishSpot");
+    console.log(" [main.js] 지도에서 찾은 낚시 스팟 개수: ${FishSpots.length}개");
+
+    FishSpots.forEach(Spot => {
+        Spot.addEventListener('click', function(event){
+            event.stopPropagation();
+
+            // 낚시 스팟의 이름표 가져오기 (SVG에 data-spot 속성 삽입 필요)
+            const RawSpotName = Spot.getAttribute('data-spot');
+            const SpotName = RawSpotName ? RawSpotName.trim() : "";
+
+            // 현재 몇월인지 확인 (1~12월)
+            const CurrentMonth = new Date().getMonth() + 1;
+            console.log('[낚시 스팟 클릭] 이름표 : [${SpotName}], 현재 월 : ${currentMonth}월'); // 이건 디버깅용이라 배포땐 없애야함 
+
+            // 하드 코딩한 물고기 데이터에서 스팟 정보 찾기
+            const SpotData = FishSpotData[SpotName];
+            if (SpotData && SpotData.FishByMonth[CurrentMonth]) {
+                const CurrentFishes = SpotData.FishByMonth[CurrentMonth];
+                console.log('${SpotName}의 ${CurrentMonth}월 어종 데이터 매칭 성공', CurrentFishes);
+
+                // 여기에 팝업이나 새로운 바텀 시트 올리는 로직 작성하면 될듯?
+                alert(`${SpotName}의 ${CurrentMonth}월 추천 어종은 ${CurrentFishes[0].FishName} 등 총 ${CurrentFishes.length}종 입니다!`);
+            } else{
+                console.warn(`❌ [${SpotName}]의 ${CurrentMonth}월 어종 데이터가 없습니다.`);
+                // alert 위아래 이것들은 시트 넣기 전에 임시 출력용임.
+                alert(`${SpotName}의 이번 달 어종 데이터가 준비되지 않았습니다.`);
+            }
+        });
+    });
 }
 
 /**
