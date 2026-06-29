@@ -19,11 +19,11 @@ function setupMapEvents() {
         return;
     }
 
-    // SVG 내부에서 class="FishSpot"을 가진 모든 아이콘 찾기
-    const FishSpots = SvgDoc.querySelectorAll(".FishSpot");
-    console.log(`🎣 [main.js] 지도에서 찾은 낚시 스팟 개수: ${FishSpots.length}개`);
+    // SVG 내부에서 class="WSpot"을 가진 모든 아이콘 찾기
+    const WSpots = SvgDoc.querySelectorAll(".WSpot");
+    console.log(`🎣 [main.js] 지도에서 찾은 날씨 스팟 개수: ${WSpots.length}개`);
 
-    FishSpots.forEach(Spot => {
+    WSpots.forEach(Spot => {
         Spot.addEventListener('click', function(event) {
             // 혹시 모를 이벤트 버블링(중복 클릭 현상) 차단
             event.stopPropagation();
