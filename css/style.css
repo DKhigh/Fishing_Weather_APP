@@ -7,12 +7,10 @@
     -moz-osx-font-smoothing: grayscale;
 }
 html, body {
-    height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
     background-color: #f9fafb;
-    display: flex;
-    flex-direction: column;
+    overflow-y: auto; /* 세로 스크롤 허용 */
 }
 header {
     width: 100%;
@@ -22,6 +20,9 @@ header {
     grid-template-columns: 50px 1fr 50px;
     align-items: center;
     padding: 0;
+    position: fixed; /* 헤더를 화면 상단에 고정 */
+    top: 0;
+    z-index: 100; /* 날씨나 지도보다 위에 뜨도록 설정*/
 }
 header button{
     background: none;
@@ -51,6 +52,9 @@ header button{
     justify-content: center;
     padding: 5px 0 5px 0;
     border-bottom: 1px solid #f2f4f6;
+    position: fixed; /* 헤더 밑에 고정 */
+    top: 40px; 
+    z-index: 100;
 }
 
 .pillBox{
@@ -72,15 +76,26 @@ header button{
     margin-bottom: 10%;
 }
 .contentContainer {
+    /*
     flex: 1; 
     width: 100%;
     height: calc(100% - 75px); 
     display: flex;
     justify-content: center;
-    /* 🛠️ 수정 1: 컨테이너 내부의 flex 정렬을 풀고 일반 블록 흐름으로 제어 */
+    🛠️ 수정 1: 컨테이너 내부의 flex 정렬을 풀고 일반 블록 흐름으로 제어 
     align-items: flex-start;
-    /* 🛠️ 수정 2: 토스풍 여백을 주되 상단 여백은 0으로 하여 헤더에 밀착 */
+     🛠️ 수정 2: 토스풍 여백을 주되 상단 여백은 0으로 하여 헤더에 밀착 
     padding: 0 24px 24px 24px; 
+    */
+    width: 100%;
+    height: 100vh; /* 화면 전체 크기 차지 */
+    position: fixed; /* 🌟 스크롤을 내려도 지도는 가만히 배경에 고정 */
+    top: 0; 
+    z-index: 1; /* 날씨 패널 뒤로 깔리게 1층으로 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 80px 24px 24px 24px; /* 지도가 상단 바에 가려지지 않게 여백 밀어내기 */
 }
 
 object {
@@ -219,4 +234,179 @@ left: 0;  transform: translateX(-100%); -> 좌측 정렬 & 좌측 숨김
     padding: 20px;
     overflow-y: auto; /* 내용이 길어지면 바텀시트처럼 내부 스크롤 생성 */
     flex: 1;
+}
+
+
+
+/* --- 날씨 파트 --- */
+
+#weather { 
+    position: relative; 
+    z-index: 10; 
+    margin-top: calc(100vh - 150px);
+    
+    /* 🌟 핵심 1: 왼쪽 쏠림 방지 및 가로 폭 제한(500px) 풀기 */
+    width: 100%;
+    max-width: none; /* 기존 .container 속성 덮어쓰기 */
+    margin-left: 0;
+    margin-right: 0;
+    
+    background-color: #ffffff; 
+    color: #191f28; 
+    padding: 30px 20px 60px 20px; 
+    border-top-left-radius: 30px; /* 모서리를 좀 더 부드럽고 둥글게 */
+    border-top-right-radius: 30px;
+    box-shadow: 0 -8px 20px rgba(0,0,0,0.1); /* 패널 위쪽에 부드러운 그림자 생성 */
+    
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; /* 내부 내용물들을 가운데 정렬 */
+}
+
+/* 🌟 핵심 2: 하얀 패널 배경은 꽉 차더라도, 안의 날씨 데이터들은 너무 퍼지지 않게 중앙으로 예쁘게 모아주기 */
+#weather > div {
+    width: 100%;
+    max-width: 600px; /* 모바일처럼 내용물 폭 유지 */
+}
+    
+.container { 
+    width: 100%; 
+    max-width: 500px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 24px; 
+}
+    
+/* 카드 공통 스타일 */
+.card { 
+    background: #f9fafb; 
+    border-radius: 20px; 
+    padding: 20px; 
+}
+    
+/* 1. 현재 날씨 헤더 */
+.currentWeather { 
+    display: grid; 
+    grid-template-columns: 1fr 1.2fr 1fr; 
+    align-items: center; 
+    text-align: center; 
+    background: #ffffff; 
+    padding: 10px 0; 
+}
+.currentWeather .weatherIcon { 
+    font-size: 40px; 
+}
+.currentWeather .status { 
+    font-size: 14px; 
+    color: #8b95a1; 
+    margin-top: 4px; 
+}
+.currentWeather .tempMain { 
+    font-size: 48px; 
+    font-weight: 700; 
+    letter-spacing: -1px; 
+}
+.currentWeather .tempRange { 
+    text-align: right; 
+    font-size: 14px; 
+    color: #4e5968; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 4px; 
+}
+.currentWeather .tempRange span strong { 
+    color: #191f28; 
+}
+
+/* 2. 시간별 날씨 (가로 스크롤) */
+.hourlyScroll { 
+    display: flex; 
+    gap: 16px; 
+    overflow-x: auto; 
+    padding-bottom: 8px; 
+    scrollbar-width: none; 
+}
+.hourlyScroll::-webkit-scrollbar { 
+    display: none; 
+}
+.hourlyItem { 
+    flex: 0 0 auto; 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 6px; 
+    width: 55px; 
+}
+.hourlyItem .time { 
+    font-size: 13px; 
+    color: #8b95a1; 
+}
+.hourlyItem .icon { 
+    font-size: 22px; 
+}
+.hourlyItem .temp { 
+    font-size: 15px; 
+    font-weight: 600; 
+}
+
+/* 3. 해양/기상 상세 정보 그리드 */
+.detailsGrid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 12px; 
+}
+.detailCard { 
+    background: #f9fafb; 
+    border-radius: 16px; 
+    padding: 16px; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    min-height: 95px; 
+}
+.detailCard .title { 
+    font-size: 13px; 
+    color: #8b95a1; 
+    font-weight: 500; 
+}
+.detailCard .value { 
+    font-size: 16px; 
+    font-weight: 600; 
+    color: #333d4b; 
+    margin-top: 8px; 
+}
+
+/* 4. 주간 날씨 리스트 */
+.weeklyForecast { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 16px; 
+}
+.weeklyItem { 
+    display: grid; 
+    grid-template-columns: 70px 40px 1fr auto; 
+    align-items: center; 
+    font-size: 15px; 
+    font-weight: 500; 
+}
+.weeklyItem .day { 
+    color: #191f28; 
+}
+.weeklyItem .icon { 
+    font-size: 20px; 
+}
+.weeklyItem .rain-pop { 
+    color: #3182f6; 
+    font-size: 13px; 
+    font-weight: 600; 
+}
+.weeklyItem .tempRange { 
+    text-align: right; 
+    color: #8b95a1; 
+}
+.weeklyItem .tempRange .max { 
+    color: #191f28; 
+    font-weight: 600; 
+    margin-right: 6px; 
 }

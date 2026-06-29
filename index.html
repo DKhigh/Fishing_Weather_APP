@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>권역별 해양기상 데이터 다중 API 병합 테스트 (전국)</title>
+  <title>바다보기</title>
   <link rel="stylesheet" href="css\style.css">
 </head>
 <body>
-  <h1>전국 권역 기상 데이터 병합 테스트</h1>
   <header>
     <button aria-label="home">
       <img src="svg/homeButton.svg" alt="appIcon" class="textIcon">
@@ -61,6 +60,106 @@
         };
     </script>
   </main>
+
+  <div class="container" id="weather">
+    <div class="currentWeather">
+      <div>
+        <div class="weatherIcon">🌤️</div>
+        <div class="status">흐린 후 맑음</div>
+      </div>
+      <div class="tempMain">19℃</div>
+      <div class="tempRange">
+        <span>최고 <strong style="color:#f04452;">22°</strong></span>
+        <span>최저 <strong style="color:#3182f6;">17°</strong></span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="hourlyScroll">
+        <div class="hourlyItem"><span class="time">00시</span><span class="icon">🌤️</span><span class="temp">17°</span></div>
+        <div class="hourlyItem"><span class="time">01시</span><span class="icon">🌤️</span><span class="temp">17°</span></div>
+        <div class="hourlyItem"><span class="time">02시</span><span class="icon">🌤️</span><span class="temp">17°</span></div>
+        <div class="hourlyItem"><span class="time">03시</span><span class="icon">☀️</span><span class="temp">18°</span></div>
+        <div class="hourlyItem"><span class="time">04시</span><span class="icon">☀️</span><span class="temp">18°</span></div>
+        <div class="hourlyItem"><span class="time">05시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">06시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">07시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">08시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">09시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">10시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">11시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">12시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">13시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">14시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">15시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">16시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">17시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">18시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">19시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">20시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">21시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">22시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">23시</span><span class="icon">☀️</span><span class="temp">19°</span></div>
+        <div class="hourlyItem"><span class="time">24시</span><span class="icon">🌤️</span><span class="temp">19°</span></div>
+      </div>
+    </div>
+
+    <div class="detailsGrid">
+      <div class="detailCard"><span class="title">수온</span><span class="value">18.2°C</span></div>
+      <div class="detailCard"><span class="title">풍향/풍속</span><span class="value">북서 4.2m/s</span></div>
+      <div class="detailCard"><span class="title">유의파고</span><span class="value">1.2m</span></div>
+      <div class="detailCard"><span class="title">조위</span><span class="value">120cm</span></div>
+      <div class="detailCard"><span class="title">기온</span><span class="value">19.0°C</span></div>
+      <div class="detailCard"><span class="title">해면기온</span><span class="value">18.5°C</span></div>
+    </div>
+
+    <div class="card weeklyForecast">
+      <div class="weeklyItem">
+        <span class="day">오늘</span><span class="icon">🌤️</span><span class="rain-pop">0%</span>
+        <div class="tempRange"><span class="max">22°</span><span class="min">17°</span></div>
+      </div>
+      <div class="weeklyItem">
+        <span class="day">내일</span><span class="icon">🌦️</span><span class="rain-pop">30%</span>
+        <div class="tempRange"><span class="max">21°</span><span class="min">16°</span></div>
+      </div>
+      <div class="weeklyItem">
+        <span class="day">모레</span><span class="icon">☀️</span><span class="rain-pop">0%</span>
+        <div class="tempRange"><span class="max">24°</span><span class="min">18°</span></div>
+      </div>
+      <div class="weeklyItem">
+        <span class="day">3일 후</span><span class="icon">☁️</span><span class="rain-pop">10%</span>
+        <div class="tempRange"><span class="max">23°</span><span class="min">17°</span></div>
+      </div>
+      <div class="weeklyItem">
+        <span class="day">4일 후</span><span class="icon">🌤️</span><span class="rain-pop">0%</span>
+        <div class="tempRange"><span class="max">22°</span><span class="min">15°</span></div>
+      </div>
+      <div class="weeklyItem">
+        <span class="day">5일 후</span><span class="icon">🌤️</span><span class="rain-pop">0%</span>
+        <div class="tempRange"><span class="max">22°</span><span class="min">15°</span></div>
+      </div>
+      <div class="weeklyItem">
+        <span class="day">6일 후</span><span class="icon">🌤️</span><span class="rain-pop">0%</span>
+        <div class="tempRange"><span class="max">22°</span><span class="min">15°</span></div>
+      </div>
+      <div class="weeklyItem">
+        <span class="day">7일 후</span><span class="icon">🌤️</span><span class="rain-pop">0%</span>
+        <div class="tempRange"><span class="max">22°</span><span class="min">15°</span></div>
+      </div>
+    </div>
+  </div>
+
+  <aside id="BottomSheet" class="sheet" aria-hidden="true">
+    <div class="SheetHeader">
+      <h2>권역별 해양기상 데이터</h2>
+      <button id="CloseSheetBtn" class="CloseBtn">X</button>
+    </div>
+    <article id="SheetArticle">
+      <div id="SheetContent">
+        <h2>권역별 해양기상 데이터</h2>
+        <p>이곳에 권역별 해양기상 데이터를 표시합니다.</p>
+      </div>
+    </article>
+  </aside>
   <!-- IDE내 스크립트 파일 로드 -->
   <script src="js\apikey.js"></script>
   <script src="js\virtualStationMap.js"></script>
