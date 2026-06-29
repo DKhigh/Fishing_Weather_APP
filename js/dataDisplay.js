@@ -183,10 +183,12 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
                 // 지나간 과거 시간은 버리고 현재 시간(now.getHours) 이후의 데이터만 화면에 뿌리기 위해 필터링함
                 if (parseInt(fTime.substring(0, 2)) >= now.getHours()) {
                     if (!hourlyMap[fTime]) {
-                        hourlyMap[fTime] = { hour: fTime.substring(0, 2) + "시", temp: "자료없음", sky: "자료없음" };
+                        // 기본 객체 구조에 pop(강수확률) 필드를 추가함
+                        hourlyMap[fTime] = { hour: fTime.substring(0, 2) + "시", temp: "자료없음", sky: "자료없음", pop: "자료없음" };
                     }
                     if (item.category === 'TMP') hourlyMap[fTime].temp = val + ' ℃';
                     if (item.category === 'SKY') hourlyMap[fTime].sky = mapSkyStatus[val] || '자료없음';
+                    if (item.category === 'POP') hourlyMap[fTime].pop = val + '%'; // 시간별 강수확률 파싱 로직 추가함
                 }
             } 
             // 2. 미래(내일~글피) 데이터 처리: 중기예보랑 합치기 위해 일별로 데이터를 압축함
@@ -339,13 +341,13 @@ async function fetchMidTermWeather(taRegId, landRegId) {
 }
 
 /**
- * [해양통신] 사용자가 선택한 위경도를 기반으로 전국 가상 관측소 중 가장 거리가 짧은(가까운) 곳을 찾아내는 함수
+ * [해양통신] 사용자가 선택한 위경도를 기반으로 전국 가상 관측소들을 거리가 가까운 순서대로 정렬하여 반환하는 함수
+ * (결측치 발생 시 가장 가까운 다른 관측소 데이터를 빌려오기 위해 배열로 반환함)
  */
-function findNearestMarineStation(lat, lon) {
-    let nearestStation = null;
-    let minDistance = Infinity; 
+function getSortedMarineStations(lat, lon) {
+    let stationsList = [];
 
-    // VIRTUAL_STATION_MAP 객체를 통째로 순회하면서 최단 거리를 갱신함
+    // VIRTUAL_STATION_MAP 객체를 통째로 순회하면서 모든 관측소와의 거리를 계산함
     for (const region in VIRTUAL_STATION_MAP) {
         for (const station of VIRTUAL_STATION_MAP[region]) {
             const tideData = findSeaObsData(cachedSeaObsLines, station.tideStation.tp, station.tideStation.keyword);
@@ -355,15 +357,12 @@ function findNearestMarineStation(lat, lon) {
                 const sLat = parseFloat(tideData[5]);
                 const dist = getDistance(lat, lon, sLat, sLon);
                 
-                // 계산된 거리가 기존 최소 거리보다 짧으면 최단 거리 챔피언을 교체함
-                if (dist < minDistance) {
-                    minDistance = dist;
-                    nearestStation = station;
-                }
+                stationsList.push({ station: station, dist: dist });
             }
         }
     }
-    return nearestStation; // 최종적으로 가장 가까운 관측소 객체를 반환함
+    // 거리가 가까운 순(오름차순)으로 정렬하여 최종 배열을 반환함
+    return stationsList.sort((a, b) => a.dist - b.dist);
 }
 
 /**
@@ -399,16 +398,11 @@ async function getWeatherDataByCoords(lat, lon, targetDate) {
     // dayOffSet(며칠 뒤) 기준으로 오름차순 정렬하여 1일부터 10일까지 이어지는 깔끔한 배열 완성함
     const finalWeeklyArray = Object.values(combinedMidTermMap).sort((a, b) => a.dayOffSet - b.dayOffSet);
 
-    // 4. 해양 실시간 데이터 통신 가동
-    const nearestStation = findNearestMarineStation(lat, lon);
+    // 4. 해양 실시간 데이터 통신 가동 및 결측치 보정(Fallback) 로직
+    const sortedStations = getSortedMarineStations(lat, lon);
     let marineWeather = null;
 
-    if (nearestStation) {
-        // 가장 가까운 관측소의 조위, 파고부이, 조위관측소 데이터를 전부 끌어모음
-        const khoaTideData = await fetchKhoaTideData(nearestStation.tideObsCode);
-        const waveData = findSeaObsData(cachedSeaObsLines, nearestStation.waveStation.tp, nearestStation.waveStation.keyword);
-        const tideData = findSeaObsData(cachedSeaObsLines, nearestStation.tideStation.tp, nearestStation.tideStation.keyword);
-
+    if (sortedStations.length > 0) {
         // 기상청 센서 고장으로 인한 결측치(null, '-', '-99')를 안전하게 거르는 헬퍼 함수임
         const getKmaVal = (arr, idx) => {
             if (!arr || !arr[idx]) return null;
@@ -416,23 +410,52 @@ async function getWeatherDataByCoords(lat, lon, targetDate) {
             return (val === 'null' || val === '-' || val === '' || val === '-99.0' || val === '-99') ? null : val;
         };
 
-        // 파고부이와 조위관측소 중 하나라도 값이 살아있다면 대체해서( || ) 쓰도록 조립함
+        // 가장 가까운 관측소를 메인(스팟 이름 제공용)으로 잡음
+        const nearestStation = sortedStations[0].station;
+
+        // 데이터를 덧씌울 빈 껍데기 객체를 준비함
         marineWeather = {
             spotName: nearestStation.spotName,
-            waterTemp: getKmaVal(waveData, 10) || getKmaVal(tideData, 10),
-            waveHeight: getKmaVal(waveData, 6),
-            tideLevel: khoaTideData?.bscTdlvHgt,
-            windSpeed: getKmaVal(tideData, 8) || getKmaVal(waveData, 8),
-            windDirection: getKmaVal(tideData, 7) || getKmaVal(waveData, 7)
+            waterTemp: null,
+            waveHeight: null,
+            tideLevel: null,
+            windSpeed: null,
+            windDirection: null
         };
+
+        // 거리가 가까운 관측소부터 순회하며 빈 값이 있으면 그 값을 빌려와서 채움
+        for (const item of sortedStations) {
+            const currentStation = item.station;
+            const waveData = findSeaObsData(cachedSeaObsLines, currentStation.waveStation.tp, currentStation.waveStation.keyword);
+            const tideData = findSeaObsData(cachedSeaObsLines, currentStation.tideStation.tp, currentStation.tideStation.keyword);
+
+            // 파고부이와 조위관측소 데이터 중 하나라도 유효한 값이 있고, 현재 marineWeather에 값이 비어있다면 채움
+            if (marineWeather.waterTemp === null) marineWeather.waterTemp = getKmaVal(waveData, 10) || getKmaVal(tideData, 10);
+            if (marineWeather.waveHeight === null) marineWeather.waveHeight = getKmaVal(waveData, 6);
+            if (marineWeather.windSpeed === null) marineWeather.windSpeed = getKmaVal(tideData, 8) || getKmaVal(waveData, 8);
+            if (marineWeather.windDirection === null) marineWeather.windDirection = getKmaVal(tideData, 7) || getKmaVal(waveData, 7);
+            
+            // 조위 데이터는 별도 API 통신이 필요하므로 값이 비어있을 때만 비동기로 통신을 시도함
+            if (marineWeather.tideLevel === null) {
+                const khoaTideData = await fetchKhoaTideData(currentStation.tideObsCode);
+                if (khoaTideData && khoaTideData.bscTdlvHgt) {
+                    marineWeather.tideLevel = khoaTideData.bscTdlvHgt;
+                }
+            }
+
+            // 모든 해양 데이터 항목이 성공적으로 채워졌다면 더 이상 먼 관측소를 뒤질 필요 없이 반복문을 종료함
+            if (marineWeather.waterTemp && marineWeather.waveHeight && marineWeather.windSpeed && marineWeather.windDirection && marineWeather.tideLevel) {
+                break;
+            }
+        }
     }
 
     // 5. 프론트엔드가 화면에 그리기 좋게 최종 구조를 잡아서 반환함
     return {
         requestedCoords: { lat, lon }, // 요청받은 좌표 확인용
         targetDate: targetDate,        // 기준이 된 날짜
-        landShortTerm: shortTermData.hourly, // 오늘 하루 동안의 시간별 촘촘한 날씨
+        landShortTerm: shortTermData.hourly, // 오늘 하루 동안의 시간별 촘촘한 날씨 (내부에 pop 필드가 추가됨)
         landMidTerm: finalWeeklyArray,       // 1일 뒤부터 10일 뒤까지 하나로 합쳐진 일별 주간 날씨
-        marine: marineWeather                // 해양 실황 데이터
+        marine: marineWeather                // 결측치가 보정된 해양 실황 데이터
     };
 }
