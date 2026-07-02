@@ -126,7 +126,7 @@ object {
 }
 
 /* 바텀 시트 기본 상태 (화면 아래에 숨김) */
-#BottomSheet {
+#BottomSheet, #FishBottomSheet {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -138,7 +138,7 @@ object {
     /* 핵심: 화면 밖으로 100% 밀어내서 숨기기 */
     transform: translateY(100%);
     transition: transform 0.3s ease-in-out;
-    z-index: 100;
+    z-index: 1000;
 }
 
 /* JS로 Show 클래스가 추가되면 원래 위치(0)로 올라옴 */
@@ -191,7 +191,7 @@ object {
     
     background-color: white;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* 왼쪽에 은은한 그림자를 주어 입체감 부여 */
-    z-index: 1000;      /* 지도나 헤더보다 무조건 위에 뜨도록 최상단 배치 */
+    z-index: 2000;      /* 지도나 헤더보다 무조건 위에 뜨도록 최상단 배치 */
     
     /* 🌟 중요: 평소에는 우측 화면 밖으로 자신의 너비만큼(100%) 완전히 밀어내어 완벽히 숨깁니다. */
     transform: translateX(100%); 
@@ -236,6 +236,7 @@ left: 0;  transform: translateX(-100%); -> 좌측 정렬 & 좌측 숨김
     overflow-y: auto; /* 내용이 길어지면 바텀시트처럼 내부 스크롤 생성 */
     flex: 1;
 }
+
 
 
 

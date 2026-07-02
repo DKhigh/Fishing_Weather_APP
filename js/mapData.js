@@ -114,7 +114,7 @@ loadAllMapData();
 
 // 낚시 스팟별 & 월별 어종 데이터 하드코딩
 const FishSpotData = {
-    "JJfish" :{
+    "제주도" :{
         name: "제주도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
@@ -131,7 +131,7 @@ const FishSpotData = {
             12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
         }
     },
-    "GWfish" :{
+    "강원도" :{
         name: "강원도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
@@ -148,7 +148,7 @@ const FishSpotData = {
             12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
         }
     },
-    "GBfish" :{
+    "경상북도" :{
         name: "경상북도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
@@ -165,7 +165,7 @@ const FishSpotData = {
             12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
         }
     },
-    "GNfish" :{
+    "경상남도" :{
         name: "경상남도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
@@ -182,7 +182,7 @@ const FishSpotData = {
             12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
         }
     },
-    "JNfish" :{
+    "전라남도" :{
         name: "전라남도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
@@ -199,7 +199,7 @@ const FishSpotData = {
             12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
         }
     },
-    "JBfish" :{
+    "전라북도" :{
         name: "전라북도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
@@ -216,7 +216,7 @@ const FishSpotData = {
             12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
         }
     },
-    "CNfish" :{
+    "충청남도" :{
         name: "충청남도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],
@@ -233,7 +233,7 @@ const FishSpotData = {
             12: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}]
         }
     },
-    "SMfish" :{
+    "경기도" :{
         name: "경기도 낚시 스팟",
         FishByMonth: {
             1: [{FishName: "방어", HtmlPath: "fishPage/fish.html"}],

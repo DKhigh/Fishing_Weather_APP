@@ -902,7 +902,7 @@
           <text class="cls-40" transform="translate(101.78 217.57)"><tspan x="0" y="0">국화도</tspan></text>
         </g>
       </g>
-      <g id="SMfish" class="FishSpot">
+      <g id="SMfish" class="FishSpot" data-spot="경기도">
         <rect id="SMfishB" class="cls-10" x="40.89" y="167.16" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON">
           <path class="cls-47" d="M44.48,170.75v22.81h22.81v-22.81h-22.81Zm20.91,20.91h-19.01v-19.01h19.01v19.01Z"/>
@@ -931,7 +931,7 @@
           <text class="cls-38" transform="translate(86.43 352.07)"><tspan x="0" y="0">서천</tspan></text>
         </g>
       </g>
-      <g id="CNfish" class="FishSpot">
+      <g id="CNfish" class="FishSpot" data-spot="충청남도">
         <rect id="CNfishB" class="cls-17" x="24.54" y="300.37" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON-2" data-name="ICON">
           <path class="cls-47" d="M28.14,303.97v22.81h22.81v-22.81H28.14Zm20.91,20.91H30.04v-19.01h19.01v19.01Z"/>
@@ -960,7 +960,7 @@
           <text class="cls-38" transform="translate(55.89 454.04)"><tspan x="0" y="0">고창</tspan></text>
         </g>
       </g>
-      <g id="JBfish" class="FishSpot">
+      <g id="JBfish" class="FishSpot" data-spot="전라북도">
         <rect id="JBfishB" class="cls-29" x="24.54" y="367.8" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON-3" data-name="ICON">
           <path class="cls-47" d="M28.14,371.4v22.81h22.81v-22.81H28.14Zm20.91,20.91H30.04v-19.01h19.01v19.01Z"/>
@@ -989,7 +989,7 @@
           <text class="cls-38" transform="translate(206.41 552.54)"><tspan x="0" y="0">여수</tspan></text>
         </g>
       </g>
-      <g id="JNfish" class="FishSpot">
+      <g id="JNfish" class="FishSpot" data-spot="전라남도">
         <rect id="JNfishB" class="cls-21" x="138.24" y="599.26" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON-4" data-name="ICON">
           <path class="cls-47" d="M141.84,602.86v22.81h22.81v-22.81h-22.81Zm20.91,20.91h-19.01v-19.01h19.01v19.01Z"/>
@@ -1018,7 +1018,7 @@
           <text class="cls-38" transform="translate(346.35 487.31)"><tspan x="0" y="0">부산</tspan></text>
         </g>
       </g>
-      <g id="GNfish" class="FishSpot">
+      <g id="GNfish" class="FishSpot" data-spot="경상남도">
         <rect id="GNfishB" class="cls-15" x="370.6" y="519.88" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON-5" data-name="ICON">
           <path class="cls-47" d="M374.19,523.48v22.81h22.81v-22.81h-22.81Zm20.91,20.91h-19.01v-19.01h19.01v19.01Z"/>
@@ -1047,7 +1047,7 @@
           <text class="cls-38" transform="translate(420.51 298.27)"><tspan x="0" y="0">영덕</tspan></text>
         </g>
       </g>
-      <g id="GBfish" class="FishSpot">
+      <g id="GBfish" class="FishSpot" data-spot="경상북도">
         <rect id="GBfishB" class="cls-6" x="452.5" y="280.63" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON-6" data-name="ICON">
           <path class="cls-47" d="M456.09,284.23v22.81h22.81v-22.81h-22.81Zm20.91,20.91h-19.01v-19.01h19.01v19.01Z"/>
@@ -1076,7 +1076,7 @@
           <text class="cls-38" transform="translate(331.55 64.77)"><tspan x="0" y="0">속초</tspan></text>
         </g>
       </g>
-      <g id="GWfish" class="FishSpot">
+      <g id="GWfish" class="FishSpot" data-spot="강원도">
         <rect id="GWfishB" class="cls-33" x="399.87" y="101.55" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON-7" data-name="ICON">
           <path class="cls-47" d="M403.47,105.15v22.81h22.81v-22.81h-22.81Zm20.91,20.91h-19.01v-19.01h19.01v19.01Z"/>
@@ -1112,7 +1112,7 @@
           <text class="cls-40" transform="translate(316.76 607.19)"><tspan x="0" y="0">모슬포</tspan></text>
         </g>
       </g>
-      <g id="JJfish" class="FishSpot">
+      <g id="JJfish" class="FishSpot" data-spot="제주도">
         <rect id="JJfishB" class="cls-31" x="279.1" y="564.26" width="30" height="30" rx="5.51" ry="5.51"/>
         <g id="ICON-8" data-name="ICON">
           <path class="cls-47" d="M282.69,567.86v22.81h22.81v-22.81h-22.81Zm20.91,20.91h-19.01v-19.01h19.01v19.01Z"/>

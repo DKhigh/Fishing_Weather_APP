@@ -71,7 +71,7 @@ function setupMapEvents() {
 
     // 낚시 스팟 클릭 이벤트 설정
     const FishSpots = SvgDoc.querySelectorAll(".FishSpot");
-    console.log(" [main.js] 지도에서 찾은 낚시 스팟 개수: ${FishSpots.length}개");
+    console.log(" [main.js] 지도에서 찾은 낚시 스팟 개수: ${FishSpot.length}개");
 
     FishSpots.forEach(Spot => {
         Spot.addEventListener('click', function(event){
@@ -83,7 +83,7 @@ function setupMapEvents() {
 
             // 현재 몇월인지 확인 (1~12월)
             const CurrentMonth = new Date().getMonth() + 1;
-            console.log('[낚시 스팟 클릭] 이름표 : [${SpotName}], 현재 월 : ${currentMonth}월'); // 이건 디버깅용이라 배포땐 없애야함 
+            console.log('[낚시 스팟 클릭] 이름표 : [${SpotName}], 현재 월 : ${CurrentMonth}월'); // 이건 디버깅용이라 배포땐 없애야함 
 
             // 하드 코딩한 물고기 데이터에서 스팟 정보 찾기
             const SpotData = FishSpotData[SpotName];
@@ -92,6 +92,25 @@ function setupMapEvents() {
                 console.log('${SpotName}의 ${CurrentMonth}월 어종 데이터 매칭 성공', CurrentFishes);
 
                 // 여기에 팝업이나 새로운 바텀 시트 올리는 로직 작성하면 될듯?
+                // 데이터 HTML로 변환
+                let FishListHTML = CurrentFishes.map(fish => {
+                    return `<li>
+                        <a href="${fish.link}" style="display: block; padding: 10px; background: #f2f4f6; border-radius: 10px; margin-bottom: 8px; text-decoration: none; color: #191f28; font-weight: bold;">
+                            ${fish.FishName} 정보 보기
+                        </a>
+                    </li>`; 
+                }).join('');
+                // 바텀 시트 데이터 삽입
+                const FishSheetContent = document.getElementById('FishSheetContent');
+                FishSheetContent.innerHTML = `
+                    <h2 style="margin-top: 0; color: #2957a8;">${SpotName} (${CurrentMonth}월)</h2>
+                    <p style="color: #4e5968; margin-bottom: 15px;">이달의 추천 어종을 확인해 보세요!</p>
+                    <ul style="list-style: none; padding-left: 0;">
+                        ${FishListHTML}
+                    </ul>
+                `;
+                // 바텀 시트 스윽 올리기
+                document.getElementById('FishBottomSheet').classList.add('Show');
                 alert(`${SpotName}의 ${CurrentMonth}월 추천 어종은 ${CurrentFishes[0].FishName} 등 총 ${CurrentFishes.length}종 입니다!`);
             } else{
                 console.warn(`❌ [${SpotName}]의 ${CurrentMonth}월 어종 데이터가 없습니다.`);
@@ -117,6 +136,13 @@ const closeBtn = document.getElementById('CloseSheetBtn');
 if (closeBtn) {
     closeBtn.addEventListener('click', function() {
         document.getElementById('BottomSheet').classList.remove('Show');
+    });
+}
+// 낚시 어종 바텀 시트 닫기(X) 버튼 로직
+const closeFishBtn = document.getElementById('CloseFishSheetBtn');
+if (closeFishBtn) {
+    closeFishBtn.addEventListener('click', function() {
+        document.getElementById('FishBottomSheet').classList.remove('Show');
     });
 }
 // 사이드 시트 여닫기 로직
