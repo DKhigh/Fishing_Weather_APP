@@ -116,8 +116,7 @@ function findSeaObsData(lines, tp, keyword) {
  */
 async function fetchKhoaTideData(obsCode) {
     if (!obsCode) return null;
-    const url = `/api/tide?obsCode=${tideObsCode}`;
-
+    const url = `/api/tide?obsCode=${obsCode}`;
     try {
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
@@ -158,8 +157,8 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
     const baseTime = "0500"; 
 
     // 미래 3일치 데이터를 빠짐없이 긁어오기 위해 numOfRows를 1000이라는 큰 숫자로 세팅함
-    const fcstUrl = `https://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${KHOA_API_KEY}&pageNo=1&numOfRows=1000&dataType=JSON&base_date=${baseDate}&base_time=${baseTime}&nx=${nx}&ny=${ny}`;
-
+    const fcstUrl = `/api/shortTerm?base_date=${baseDate}&base_time=${baseTime}&nx=${nx}&ny=${ny}`;
+    
     let result = { hourly: [], daily: [] };
 
     try {
@@ -287,9 +286,9 @@ async function fetchMidTermWeather(taRegId, landRegId) {
     const tmFc = getMidTermBaseTime();
     
     // API 주소를 각각 분리해서 준비함
-    const taUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${KHOA_API_KEY}&pageNo=1&numOfRows=10&dataType=JSON&regId=${taRegId}&tmFc=${tmFc}`;
-    const landUrl = `https://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${KHOA_API_KEY}&pageNo=1&numOfRows=10&dataType=JSON&regId=${landRegId}&tmFc=${tmFc}`;
-
+    const taUrl = `/api/midTermTa?regId=${taRegId}&tmFc=${tmFc}`;
+    const landUrl = `/api/midTermLand?regId=${landRegId}&tmFc=${tmFc}`;
+    
     let weeklyArray = [];
 
     try {
