@@ -71,7 +71,7 @@ function setupMapEvents() {
 
     // 낚시 스팟 클릭 이벤트 설정
     const FishSpots = SvgDoc.querySelectorAll(".FishSpot");
-    console.log(" [main.js] 지도에서 찾은 낚시 스팟 개수: ${FishSpot.length}개");
+    console.log(" [main.js] 지도에서 찾은 낚시 스팟 개수: ${FishSpots.length}개");
 
     FishSpots.forEach(Spot => {
         Spot.addEventListener('click', function(event){
@@ -164,3 +164,81 @@ if (sideCloseBtn) {
         sideSheet.classList.remove('Show');
     });
 }
+
+
+/**
+ * 시간별 날씨 칸들에 HTML을 생성해 삽입하는 렌더링 함수
+ */
+function renderHourlyWeather(hourlyDataArray) {
+    // 1. getElementById 대신 querySelector를 사용합니다. 
+    // (클래스명을 찾을 때는 CSS처럼 앞에 점(.)을 꼭 찍어야 합니다!)
+    const scrollContainer = document.querySelector('.hourlyScroll');
+    
+    if (!scrollContainer) {
+        console.warn("시간별 날씨 컨테이너(.hourlyScroll)를 찾을 수 없습니다.");
+        return;
+    }
+
+    let htmlContent = '';
+
+    hourlyDataArray.forEach((hourItem, index) => {
+        let displayTime = index === 0 ? "현재" : hourItem.hour; // 첫 칸은 '현재'
+        
+        // 하늘상태 이모지
+        let skyIcon = '☀️';
+        if (hourItem.sky === '구름많음') skyIcon = '⛅';
+        if (hourItem.sky === '흐림') skyIcon = '☁️';
+        if (hourItem.pop !== '자료없음' && parseInt(hourItem.pop) > 50) skyIcon = '🌧️';
+
+        // 2. 올려주신 HTML 코드에 맞춰서 클래스명을 'hourlyItem'으로 맞췄습니다.
+        htmlContent += `
+            <div class="hourlyItem">
+                <span class="time">${displayTime}</span>
+                <span class="icon">${skyIcon}</span>
+                <span class="temp">${hourItem.temp}</span>
+            </div>
+        `;
+    });
+
+    // 컨테이너 안에 생성된 HTML 덩어리를 쏙 집어넣습니다.
+    scrollContainer.innerHTML = htmlContent;
+}
+
+/**
+ * 🛠️ 앱 로드 시 dataDisplay.js의 함수를 이용해 날씨 불러오기
+ */
+window.onload = async () => {
+    console.log("🔔 메인 화면 날씨 위젯 로딩 시작...");
+
+    try {
+        // 1. 현재 위경도 (일단 김해시 기준으로 하드코딩, 나중에 GPS 연동 시 이 변수를 교체하세요)
+        const lat = 35.2285; 
+        const lon = 128.8894;
+        
+        // 2. 오늘 날짜 구하기 (YYYYMMDD 포맷)
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const targetDate = `${year}${month}${day}`;
+
+        // 3. dataDisplay.js의 메인 함수 호출 (통신 진행됨)
+        const weatherData = await getWeatherDataByCoords(lat, lon, targetDate);
+
+        if (weatherData && weatherData.landShortTerm) {
+            console.log("✅ 데이터 로드 성공!", weatherData);
+            
+            // 4. 단기예보(hourly) 배열을 화면에 렌더링
+            renderHourlyWeather(weatherData.landShortTerm);
+            
+            // (선택) 메인 화면에 현재 기온 딱 하나 띄우는 칸이 있다면 이렇게 활용 가능
+            // document.getElementById('mainCurrentTemp').innerText = weatherData.landShortTerm[0].temp;
+
+        } else {
+            console.error("❌ 날씨 데이터를 불러오지 못했습니다.");
+        }
+
+    } catch (error) {
+        console.error("🔥 초기화 중 에러 발생:", error);
+    }
+};
