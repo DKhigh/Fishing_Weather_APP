@@ -12,7 +12,7 @@ async function initWeatherSystem() {
     if (isInitialized) return;
     
     // MY_API_KEY는 apikey.js 파일에 전역 변수로 선언되어 있어야 정상 작동함
-    const seaObsUrl = `https://apihub.kma.go.kr/api/typ01/url/sea_obs.php?stn=0&help=0&authKey=${MY_API_KEY}`;
+    const seaObsUrl = `/api/seaObs`;
     
     try {
         const res = await fetch(seaObsUrl);
@@ -116,7 +116,7 @@ function findSeaObsData(lines, tp, keyword) {
  */
 async function fetchKhoaTideData(obsCode) {
     if (!obsCode) return null;
-    const url = `https://apis.data.go.kr/1192136/surveyTideLevel/GetSurveyTideLevelApiService?serviceKey=${KHOA_API_KEY}&type=json&obsCode=${obsCode}`;
+    const url = `/api/tide?obsCode=${tideObsCode}`;
 
     try {
         const response = await fetch(url);
