@@ -2,6 +2,8 @@
  * 지도 바텀 시트를 위한 전국 해양 데이터 사전 적재 스크립트
  * dataDisplay.js에 정의된 통신 및 파싱 함수들을 재사용하여 전국 데이터를 미리 불러옴
  */
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 async function loadAllMapData() {
     // 1. 지도 클릭 시 참조할 전역 데이터 객체(창고)를 초기화함
     window.GlobalOceanData = {};
@@ -51,6 +53,8 @@ async function loadAllMapData() {
                 airTemp: getKmaVal(tideData, 11) || getKmaVal(waveData, 11),
                 seaPressure: getKmaVal(tideData, 12) || getKmaVal(waveData, 12)
             });
+
+            await delay(200)
         }
     }
 
