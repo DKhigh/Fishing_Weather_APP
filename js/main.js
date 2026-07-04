@@ -205,40 +205,89 @@ function renderHourlyWeather(hourlyDataArray) {
 }
 
 /**
- * 🛠️ 앱 로드 시 dataDisplay.js의 함수를 이용해 날씨 불러오기
+ * 🌐 브라우저/스마트폰 GPS 좌표를 Promise 기반으로 가져오는 헬퍼 함수
+ */
+function getUserGPS() {
+    return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+            reject(new Error("이 브라우저는 GPS를 지원하지 않습니다."));
+        }
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude
+                });
+            },
+            (error) => reject(error),
+            { enableHighAccuracy: true, timeout: 7000 } // 7초 동안 GPS 신호 대기
+        );
+    });
+}
+
+/**
+ * 🛠️ 앱 로드 시 실제 GPS와 네이버 API를 이용해 주소 및 날씨 불러오기
  */
 window.onload = async () => {
     console.log("🔔 메인 화면 날씨 위젯 로딩 시작...");
 
+    // 1. 기본 예비값 설정 (GPS 실패 시 사용할 기존 김해시 기준 좌표 및 텍스트)
+    let lat = 35.2285; 
+    let lon = 128.8894;
+    let addressText = "경상남도 창원시 의창구 (기본 위치)";
+
     try {
-        // 1. 현재 위경도 (일단 김해시 기준으로 하드코딩, 나중에 GPS 연동 시 이 변수를 교체하세요)
-        const lat = 35.2285; 
-        const lon = 128.8894;
-        
-        // 2. 오늘 날짜 구하기 (YYYYMMDD 포맷)
+        // 2. 실제 스마트폰/브라우저 GPS 좌표 취득 시도
+        const coords = await getUserGPS();
+        lat = coords.lat;
+        lon = coords.lon;
+        console.log(`📍 GPS 좌표 취득 성공: 위도=${lat}, 경도=${lon}`);
+
+        // 3. 2단계에서 만든 Vercel 네이버 주소 변환 프록시 API 호출
+        const geoRes = await fetch(`/api/geocode?lat=${lat}&lon=${lon}`);
+        if (geoRes.ok) {
+            const geoData = await geoRes.json();
+            
+            // 네이버 행정동 데이터 추출 파싱 (시/도 + 시/군/구 + 읍/면/동)
+            if (geoData.results && geoData.results[0]) {
+                const region = geoData.results[0].region;
+                const area1 = region.area1.name; // 예: 경상남도
+                const area2 = region.area2.name; // 예: 창원시 의창구
+                const area3 = region.area3.name; // 예: 명서동
+                addressText = `${area1} ${area2} ${area3}`;
+            }
+        } else {
+            console.warn("⚠️ 네이버 Geocoding API 응답 실패, 기본 위치 명칭을 사용합니다.");
+        }
+    } catch (error) {
+        // 사용자가 [거부]를 누르거나 타임아웃이 나면 이쪽으로 들어옵니다.
+        console.warn("⚠️ GPS 접근 권한이 없거나 오류가 발생하여 기본 위치를 사용합니다:", error.message);
+    }
+
+    // 4. index.html에서 만든 상단바 위치 텍스트를 실제 주소로 변경
+    const locationElem = document.getElementById("locationText");
+    if (locationElem) {
+        locationElem.textContent = addressText;
+    }
+
+    // 5. 오늘 날짜 구하기 및 날씨 데이터 호출 (기존 작성하신 로직 유지)
+    try {
         const now = new Date();
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const day = String(now.getDate()).padStart(2, '0');
         const targetDate = `${year}${month}${day}`;
 
-        // 3. dataDisplay.js의 메인 함수 호출 (통신 진행됨)
+        // 🌟 하드코딩된 좌표 대신 실제 취득한(혹은 예비용) lat, lon 전달!
         const weatherData = await getWeatherDataByCoords(lat, lon, targetDate);
 
         if (weatherData && weatherData.landShortTerm) {
-            console.log("✅ 데이터 로드 성공!", weatherData);
-            
-            // 4. 단기예보(hourly) 배열을 화면에 렌더링
-            renderHourlyWeather(weatherData.landShortTerm);
-            
-            // (선택) 메인 화면에 현재 기온 딱 하나 띄우는 칸이 있다면 이렇게 활용 가능
-            // document.getElementById('mainCurrentTemp').innerText = weatherData.landShortTerm[0].temp;
-
-        } else {
-            console.error("❌ 날씨 데이터를 불러오지 못했습니다.");
+            console.log("✅ 날씨 데이터 로드 성공!", weatherData);
+            updateCurrentWeatherUI(weatherData);
+            updateHourlyWeatherUI(weatherData.landShortTerm.hourly);
+            updateWeeklyWeatherUI(weatherData.midTerm);
         }
-
-    } catch (error) {
-        console.error("🔥 초기화 중 에러 발생:", error);
+    } catch (weatherError) {
+        console.error("❌ 날씨 데이터를 불러오는 중 치명적 에러 발생:", weatherError);
     }
 };
