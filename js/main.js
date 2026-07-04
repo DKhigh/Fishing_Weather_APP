@@ -284,6 +284,56 @@ window.onload = async () => {
         if (weatherData && weatherData.landShortTerm) {
             console.log("✅ 날씨 데이터 로드 성공!", weatherData);
             renderHourlyWeather(weatherData.landShortTerm);
+
+            // 상단 날씨 위젯 (WeatherIcon, WeatherStatus, CurrentTemp, HighTemp, LowTemp)
+            // 현재 기온 (CurrentTemp)
+            const CurrentAirTemp = weatherData.landShortTerm[0].temp; 
+            const CurrentTempElem = document.getElementById("CurrentTemp");
+            if (CurrentTempElem){
+                CurrentTempElem.innerText = `${CurrentAirTemp}℃`;
+            }
+            // 현재 날씨 상태 아이콘 및 세부설명 (WeatherIcon, WeatherStatus)
+            const CurrentSky = weatherData.landShortTerm[0].sky; 
+            const CurrentPop = parseInt(weatherData.landShortTerm[0].pop);
+
+            // 하늘 상태랑 강수 확률 종합해서 이모지 결정
+            let SkyIcon = '☀️';
+            if (CurrentSky === '구름많음') SkyIcon = '⛅';
+            if (CurrentSky === '흐림') SkyIcon = '☁️';
+            if (!isNaN(CurrentPop) && CurrentPop > 50) SkyIcon = '🌧️';
+
+            // 날씨 아이콘 삽입 (WeatherIcon)
+            const IconElem = document.getElementById("WeatherIcon");
+            if (IconElem) {
+                IconElem.innerText = SkyIcon;
+            }
+
+            // 날씨 세부 설명 삽입 (WeatherStatus)
+            const StatusElem = document.getElementById("WeatherStatus");
+            if (StatusElem) {
+                StatusElem.innerText = CurrentSky;
+            }
+
+            // 최고/최저 기온 (HighTemp, LowTemp)
+            const TempValues = weatherData.landShortTerm.map(item => parseInt(item.temp)).filter(val => !isNaN(val));
+            
+            if (TempValues.length > 0) {
+                // 배열중에 가장 큰값이랑 가장 작은값을 찾아서 최고/최저 기온으로 설정함
+                const HighestTemp = Math.max(...TempValues) + "°C";
+                const LowestTemp = Math.min(...TempValues) + "°C";
+
+                // 최고 기온 삽입 (HighTemp)
+                const HighTempElem = document.getElementById("HighTemp");
+                if (HighTempElem) {
+                    HighTempElem.innerText = HighestTemp;
+                }
+
+                // 최저 기온 삽입 (LowTemp)
+                const LowTempElem = document.getElementById("LowTemp");
+                if (LowTempElem) {
+                    LowTempElem.innerText = LowestTemp;
+                }
+            }
         }
     } catch (weatherError) {
         console.error("❌ 날씨 데이터를 불러오는 중 치명적 에러 발생:", weatherError);
