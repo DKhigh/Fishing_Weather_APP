@@ -42,6 +42,7 @@ async function loadAllMapData() {
             }
 
             allStationsData.push({
+                region: region,
                 station: station,
                 lat: lat,
                 lon: lon,
@@ -62,30 +63,37 @@ async function loadAllMapData() {
     for (let i = 0; i < allStationsData.length; i++) {
         let current = allStationsData[i];
         
-        // 만약 현재 관측소의 좌표를 모른다면 거리 계산이 불가능하여 보정이 어려우므로 넘어감
-        if (current.lat === null || current.lon === null) continue;
+        let sortedNeighbors = [];
 
-        // 현재 관측소를 제외한 다른 관측소들을 거리(distance) 기준으로 오름차순 정렬함
-        let sortedNeighbors = allStationsData
-            .filter((_, idx) => idx !== i && allStationsData[idx].lat !== null)
-            .map(neighbor => {
-                return {
-                    ...neighbor,
-                    dist: getDistance(current.lat, current.lon, neighbor.lat, neighbor.lon)
-                };
-            })
-            .sort((a, b) => a.dist - b.dist);
+        // 좌표를 모른다고 무조건 포기(continue)하지 않도록 개선
+        if (current.lat !== null && current.lon !== null) {
+            // 1. 위치를 알 때: 기존처럼 '거리(distance)' 기준으로 가장 가까운 순서대로 정렬
+            sortedNeighbors = allStationsData
+                .filter((_, idx) => idx !== i && allStationsData[idx].lat !== null)
+                .map(neighbor => {
+                    return {
+                        ...neighbor,
+                        dist: getDistance(current.lat, current.lon, neighbor.lat, neighbor.lon)
+                    };
+                })
+                .sort((a, b) => a.dist - b.dist);
+        } else {
+            // 2. 위치를 모를 때(기상청 완전 고장): 거리는 모르지만 '같은 권역'에 있는 관측소들을 1순위로 탐색
+            sortedNeighbors = allStationsData.filter(neighbor => 
+                neighbor.region === current.region && neighbor !== current && neighbor.lat !== null
+            );
+        }
 
         // 빈 값을 채워 넣을 대상 데이터 항목들
         const metrics = ['waterTemp', 'windSpeed', 'windDirection', 'waveHeight', 'tideLevel', 'airTemp', 'seaPressure'];
          
         for (const metric of metrics) {
             if (current[metric] === null) {
-                // 가장 가까운 이웃부터 순회하며 유효한 값이 있는 것을 찾아서 빌려옴
+                // 가장 가까운 이웃(또는 같은 권역)부터 순회하며 유효한 값이 있는 것을 찾아서 빌려옴
                 for (const neighbor of sortedNeighbors) {
                     if (neighbor[metric] !== null) {
                         current[metric] = neighbor[metric];
-                        break; // 해당 항목의 구멍을 메웠으므로 이웃 탐색을 멈추고 다음 항목으로 넘어감
+                        break; // 구멍을 메웠으므로 이웃 탐색을 멈춤
                     }
                 }
             }
