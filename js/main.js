@@ -290,7 +290,7 @@ window.onload = async () => {
             const CurrentAirTemp = weatherData.landShortTerm[0].temp; 
             const CurrentTempElem = document.getElementById("CurrentTemp");
             if (CurrentTempElem){
-                CurrentTempElem.innerText = `${CurrentAirTemp}℃`;
+                CurrentTempElem.innerText = `${CurrentAirTemp}`;
             }
             // 현재 날씨 상태 아이콘 및 세부설명 (WeatherIcon, WeatherStatus)
             const CurrentSky = weatherData.landShortTerm[0].sky; 
