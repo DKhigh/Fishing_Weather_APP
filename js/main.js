@@ -283,9 +283,7 @@ window.onload = async () => {
 
         if (weatherData && weatherData.landShortTerm) {
             console.log("✅ 날씨 데이터 로드 성공!", weatherData);
-            updateCurrentWeatherUI(weatherData);
-            updateHourlyWeatherUI(weatherData.landShortTerm.hourly);
-            updateWeeklyWeatherUI(weatherData.midTerm);
+            renderHourlyWeather(weatherData.landShortTerm);
         }
     } catch (weatherError) {
         console.error("❌ 날씨 데이터를 불러오는 중 치명적 에러 발생:", weatherError);
