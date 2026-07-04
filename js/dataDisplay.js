@@ -176,8 +176,59 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
             const fDate = item.fcstDate; // 예보 날짜
             const fTime = item.fcstTime; // 예보 시간
             const val = item.fcstValue;  // 예보 값
+            
+            // 고유 키 생성 <- 날짜가 달라도 덮어쓰기 방지용 (7/4 진현준 수정)
+            const timeKey = `${fDate}${fTime}`;
 
             // 1. 당일(오늘) 데이터 처리: 시간대별로 묶음
+            const isPast = (fDate === targetDate) && (parseInt(fTime.substring(0, 2)) < now.getHours());
+
+            if (!isPast) {
+                if (!hourlyMap[timeKey]) {
+                    hourlyMap[timeKey] = {
+                        fullTime: timeKey,
+                        hour: fTime.substring(0, 2) + "시",
+                        temp: "자료없음",
+                        sky: "자료없음",
+                        pop: "자료없음"
+                    };
+                }
+                if (itme.category === 'TMP') hourlyMap[timeKey].temp = val + ' ℃';
+                if (item.category === 'SKY') hourlyMap[timeKey].sky = mapSkyStatus[val] || '자료없음';
+                if (item.category === 'POP') hourlyMap[timeKey].pop = val + '%'; 
+            }
+
+            // 2. 미래(내일~글피) 데이터 처리: 중기예보랑 합치기 위해 일별로 데이터를 압축함
+            if(fDate > targetDate) {
+                if (!dailyMap[fDate]) {
+                    dailyMap[fDate] = {
+                        date: fDate,
+                        temps: [],
+                        skyAm: "자료없음",
+                        skyPm: "자료없음",
+                        popAm: "0%",
+                        popPm: "0%"
+                    };
+                }
+                if (item.category === 'TMP') dailyMap[fDate].temps.push(parseFloat(val));
+                if (item.category === 'SKY') {
+                    if (fTime === '0900') dailyMap[fDate].skyAm = mapSkyStatus[val];
+                    if (fTime === '1500') dailyMap[fDate].skyPm = mapSkyStatus[val];
+                }
+                if (item.category === 'POP') {
+                    if (fTime === '0900') dailyMap[fDate].popAm = val + '%';
+                    if (fTime === '1500') dailyMap[fDate].popPm = val + '%';
+                }
+            }
+        });
+
+        // 💡 맵에 쌓인 객체들을 시간순(오름차순)으로 정렬한 뒤, .slice(0, 24)를 이용해 딱 24시간 치만 잘라냄
+        result.hourly = Object.values(hourlyMap)
+            .sort((a, b) => a.fullTime.localeCompare(b.fullTime))
+            .slice(0, 24);
+
+        const tDateObj = parseDateString(targetDate);
+            /* 7/4 진현준 수정
             if (fDate === targetDate) {
                 // 지나간 과거 시간은 버리고 현재 시간(now.getHours) 이후의 데이터만 화면에 뿌리기 위해 필터링함
                 if (parseInt(fTime.substring(0, 2)) >= now.getHours()) {
@@ -219,6 +270,7 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
         // 맵에 쌓인 객체들을 시간순(오름차순)으로 정렬하여 최종 배열로 만듦
         result.hourly = Object.values(hourlyMap).sort((a, b) => a.hour.localeCompare(b.hour));
         const tDateObj = parseDateString(targetDate);
+            */
 
         // 일별 요약 데이터 가공: 모아둔 기온 배열에서 Math.min, Math.max로 최저/최고 기온을 뽑아냄
         result.daily = Object.values(dailyMap).map(day => {
