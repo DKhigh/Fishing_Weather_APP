@@ -193,7 +193,7 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
                         pop: "자료없음"
                     };
                 }
-                if (itme.category === 'TMP') hourlyMap[timeKey].temp = val + ' ℃';
+                if (item.category === 'TMP') hourlyMap[timeKey].temp = val + ' ℃';
                 if (item.category === 'SKY') hourlyMap[timeKey].sky = mapSkyStatus[val] || '자료없음';
                 if (item.category === 'POP') hourlyMap[timeKey].pop = val + '%'; 
             }
