@@ -225,6 +225,61 @@ function getUserGPS() {
     });
 }
 
+// 중기 예보용 함수 (7일간)
+function RenderWeeklyWeather(WeeklyDataArray) {
+    const WeeklyContainer = document.getElementById("WeeklyList");
+    if (!WeeklyContainer) {
+        console.warn("주간 날씨 컨테이너(#WeeklyList)를 찾을 수 없습니다.");
+        return;
+    }
+    let HtmlContent = '';
+    const WeekDays = ['일', '월', '화', '수', '목', '금', '토']; 
+
+    // 7일치의 예보만 그리도록 7개로 제한
+    WeeklyDataArray.slice(0, 7).forEach(Item => {
+        // 요일 명칭 연산
+        let DateLabel = '';
+        if(Item.dayOffSet === 0){
+            DateLabel = '오늘';
+        } else if(Item.dayOffSet === 1){
+            DateLabel = '내일';
+        } else if(Item.dayOffSet === 2){
+            DateLabel = '모레';
+        } else {
+            const TargetDateObj = new Date();
+            TargetDateObj.setDate(TargetDateObj.getDate() + Item.dayOffSet);
+            DayLabel = WeekDays[TargetDateObj.getDay()] + '요일';
+        }
+
+        // 날씨 상태별로 이모티콘 매칭 (오후 하늘 상태(skyPm in. dataDisplay.js) 기준)
+        const SkyStatus = Item.skyPm || '맑음'; // 기본값을 '맑음'으로 설정함 (받은값이 없거나 예상밖의 것이면 기본값 출력함)
+        let SkyIcon = '☀️';
+        if (SkyStatus.includes('비') || SkyStatus.includes('소나기'))
+            SkyIcon = '🌧️';
+        else if (SkyStatus.includes('눈'))
+            SkyIcon = '❄️';
+        else if (SkyStatus.includes('흐림'))
+            SkyIcon = '☁️';
+        else if (SkyStatus.includes('구름많음'))
+            SkyIcon = '⛅';
+
+        // html에 끼워맞추기
+        HtmlContent += `
+            <div class="weeklyItem" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f4f6;">
+                <span class="day" style="font-weight: bold; width: 60px;">${DayLabel}</span>
+                <span class="icon" style="font-size: 1.2rem; margin-right: 10px;">${SkyIcon}</span>
+                <span class="status" style="color: #4e5968; flex: 1;">${SkyStatus}</span>
+                <span class="temps" style="font-weight: 500;">
+                    <span class="low" style="color: #1b64da;">${Item.minTemp}</span> / 
+                    <span class="high" style="color: #f04452;">${Item.maxTemp}</span>
+                </span>
+            </div>
+        `;
+    });
+    WeeklyContainer.innerHTML = HtmlContent;
+}
+
+
 /**
  * 🛠️ 앱 로드 시 실제 GPS와 네이버 API를 이용해 주소 및 날씨 불러오기
  */
@@ -334,8 +389,14 @@ window.onload = async () => {
                     LowTempElem.innerText = LowestTemp;
                 }
             }
+
+            // 주간 일기예보 렌더링 함수 호출
+            if (weatherData.landMidTerm) {
+                RenderWeeklyWeather(weatherData, landMidTerm);
+            }
         }
     } catch (weatherError) {
         console.error("❌ 날씨 데이터를 불러오는 중 치명적 에러 발생:", weatherError);
     }
 };
+
