@@ -392,7 +392,7 @@ window.onload = async () => {
 
             // 주간 일기예보 렌더링 함수 호출
             if (weatherData.landMidTerm) {
-                RenderWeeklyWeather(weatherData, landMidTerm);
+                RenderWeeklyWeather(weatherData.landMidTerm);
             }
         }
     } catch (weatherError) {
