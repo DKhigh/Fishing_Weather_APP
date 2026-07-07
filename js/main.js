@@ -266,7 +266,7 @@ function RenderWeeklyWeather(WeeklyDataArray) {
         // html에 끼워맞추기
         HtmlContent += `
             <div class="weeklyItem" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f4f6;">
-                <span class="day" style="font-weight: bold; width: 60px;">${DayLabel}</span>
+                <span class="day" style="font-weight: bold; width: 60px;">${DateLabel}</span>
                 <span class="icon" style="font-size: 1.2rem; margin-right: 10px;">${SkyIcon}</span>
                 <span class="status" style="color: #4e5968; flex: 1;">${SkyStatus}</span>
                 <span class="temps" style="font-weight: 500;">
