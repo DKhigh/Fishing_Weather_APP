@@ -241,7 +241,7 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
             }
 
             // 2. 미래(내일~글피) 데이터 처리: 중기예보랑 합치기 위해 일별로 데이터를 압축함
-            if(fDate > targetDate) {
+            if(fDate >= targetDate) {
                 if (!dailyMap[fDate]) {
                     dailyMap[fDate] = {
                         date: fDate,
@@ -256,11 +256,16 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
                 if (item.category === 'SKY') {
                     if (fTime === '0900') dailyMap[fDate].skyAm = mapSkyStatus[val];
                     if (fTime === '1500') dailyMap[fDate].skyPm = mapSkyStatus[val];
+
+                    // 15시 데이터가 없을때 (15시 이후 테스트 할때) 가장 마지막에 들어온 데이터를 임시로 채움
+                    if (dailyMap[fDate].skyPm === "자료없음")
+                        dailyMap[fDate].skyPm = mapSkyStatus[val];
                 }
                 if (item.category === 'POP') {
                     if (fTime === '0900') dailyMap[fDate].popAm = val + '%';
                     if (fTime === '1500') dailyMap[fDate].popPm = val + '%';
                 }
+                // (진현준) 나중에 영수가 강수형태 수정하면 여기다가 추가 코드 넣을 예정 (안넣고 끝까지 갈수도 있음)
             }
         });
 

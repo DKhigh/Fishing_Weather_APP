@@ -237,18 +237,23 @@ function RenderWeeklyWeather(WeeklyDataArray) {
 
     // 7일치의 예보만 그리도록 7개로 제한
     WeeklyDataArray.slice(0, 7).forEach(Item => {
+        if (Item.dayOffSet === undefined || Item.dayOffSet === null){
+            return;
+        }
+        // API에서 들어온게 혹시나 문자열일까봐 정수형으로 변환함
+        const OffSetNum = parseInt(Item.dayOffSet);
         // 요일 명칭 연산
         let DateLabel = '';
-        if(Item.dayOffSet === 0){
+        if(OffSetNum === 0){
             DateLabel = '오늘';
-        } else if(Item.dayOffSet === 1){
+        } else if(OffSetNum === 1){
             DateLabel = '내일';
-        } else if(Item.dayOffSet === 2){
+        } else if(OffSetNum === 2){
             DateLabel = '모레';
         } else {
             const TargetDateObj = new Date();
-            TargetDateObj.setDate(TargetDateObj.getDate() + Item.dayOffSet);
-            DayLabel = WeekDays[TargetDateObj.getDay()] + '요일';
+            TargetDateObj.setDate(TargetDateObj.getDate() + OffSetNum);
+            DateLabel = WeekDays[TargetDateObj.getDay()] + '요일';
         }
 
         // 날씨 상태별로 이모티콘 매칭 (오후 하늘 상태(skyPm in. dataDisplay.js) 기준)
@@ -263,6 +268,10 @@ function RenderWeeklyWeather(WeeklyDataArray) {
         else if (SkyStatus.includes('구름많음'))
             SkyIcon = '⛅';
 
+        // 온도 변수명 매칭 (단기 예보는 minTemp, 중기예보는 taMin) , 어디까지나 보험용임...
+        const MinTemp = Item.minTemp || Item.taMin || '-';
+        const MaxTemp = Item.maxTemp || Item.taMax || '-';
+        
         // html에 끼워맞추기
         HtmlContent += `
             <div class="weeklyItem" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f4f6;">
