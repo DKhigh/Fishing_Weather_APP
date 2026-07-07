@@ -152,12 +152,54 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     
-    const baseDate = `${year}${month}${day}`;
+    //const baseDate = `${year}${month}${day}`;
     // 단기예보를 안정적으로 받아오기 위해 새벽 5시(0500) 발표 데이터를 기준으로 삼음
-    const baseTime = "0500"; 
+    //const baseTime = "0500"; 
+    // 7/8 진현준 수정 : 새벽 4시쯤에 확인하면 다음시간대가 7시로 표시되는 문제 확인 -> 베이스 시간을 2시로 하고 시간대 확인을 위한 코드 추가
+    let BaseYear = now.getFullYear();
+    let BaseMonth = now.getMonth() + 1;
+    let BaseDay = now.getDate();
+    let BaseHour = now.getHours();
+    let BaseMinute = now.getMinutes();
+
+    // 기상청은 정각 발표 후 10분뒤에 API 서버가 열림
+    // 그래서 넉넉하게 15분 전이라면 이전 발표 데이터를 기준으로 삼음
+    if (BaseMinute < 15) {
+        BaseHour -= 1;
+    }
+
+    let BaseTime = "0200"; // 기본값 02시 발표 데이터
+
+    if (BaseHour < 2) {
+        // 새벽 0~1시 사이면 전날 23시 데이터 뽑아와야함
+        const Yesterday = new Date(now);
+        Yesterday.setDate(Yesterday.getDate() - 1);
+        BaseYear = Yesterday.getFullYear();
+        BaseMonth = Yesterday.getMonth() + 1;
+        BaseDay = Yesterday.getDate();
+        BaseTime = "2300"; // 밑에 있는거 죄다 파스칼로 바꾸기 빡세서 이거만 카멜 표기법으로 함
+    } else if (BaseHour < 5) {
+        BaseTime = "0200";
+    } else if (BaseHour < 8) {
+        BaseTime = "0500";
+    } else if (BaseHour < 11) {
+        BaseTime = "0800";
+    } else if (BaseHour < 14) {
+        BaseTime = "1100";
+    } else if (BaseHour < 17) {
+        BaseTime = "1400";
+    } else if (BaseHour < 20) {
+        BaseTime = "1700";
+    } else if (BaseHour < 23) {
+        BaseTime = "2000";
+    } else {
+        BaseTime = "2300";
+    }
+
+    const baseDate = `${BaseYear}${String(BaseMonth).padStart(2, '0')}${String(BaseDay).padStart(2, '0')}`;
 
     // 미래 3일치 데이터를 빠짐없이 긁어오기 위해 numOfRows를 1000이라는 큰 숫자로 세팅함
-    const fcstUrl = `/api/shortTerm?base_date=${baseDate}&base_time=${baseTime}&nx=${nx}&ny=${ny}`;
+    const fcstUrl = `/api/shortTerm?base_date=${baseDate}&base_time=${BaseTime}&nx=${nx}&ny=${ny}`;
     
     let result = { hourly: [], daily: [] };
 
