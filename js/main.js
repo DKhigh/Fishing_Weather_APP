@@ -188,7 +188,15 @@ function renderHourlyWeather(hourlyDataArray) {
         let skyIcon = '☀️';
         if (hourItem.sky === '구름많음') skyIcon = '⛅';
         if (hourItem.sky === '흐림') skyIcon = '☁️';
-        if (hourItem.pop !== '자료없음' && parseInt(hourItem.pop) > 50) skyIcon = '🌧️';
+        
+        // 🌟 강수형태(PTY)에 따른 비/눈 이모지 처리
+        // 1: 비, 2: 비/눈, 3: 눈, 4: 소나기
+        let ptyCode = parseInt(hourItem.pty);
+        if (ptyCode === 1 || ptyCode === 4) {
+            skyIcon = '🌧️';
+        } else if (ptyCode === 2 || ptyCode === 3) {
+            skyIcon = '❄️';
+        }
 
         // 2. 올려주신 HTML 코드에 맞춰서 클래스명을 'hourlyItem'으로 맞췄습니다.
         htmlContent += `
@@ -356,15 +364,22 @@ window.onload = async () => {
             if (CurrentTempElem){
                 CurrentTempElem.innerText = `${CurrentAirTemp}`;
             }
+            
             // 현재 날씨 상태 아이콘 및 세부설명 (WeatherIcon, WeatherStatus)
             const CurrentSky = weatherData.landShortTerm[0].sky; 
-            const CurrentPop = parseInt(weatherData.landShortTerm[0].pop);
+            const CurrentPty = parseInt(weatherData.landShortTerm[0].pty); // 🌟 PTY 데이터 가져오기
 
-            // 하늘 상태랑 강수 확률 종합해서 이모지 결정
+            // 하늘 상태랑 강수 형태(PTY)를 종합해서 이모지 결정
             let SkyIcon = '☀️';
             if (CurrentSky === '구름많음') SkyIcon = '⛅';
             if (CurrentSky === '흐림') SkyIcon = '☁️';
-            if (!isNaN(CurrentPop) && CurrentPop > 50) SkyIcon = '🌧️';
+            
+            // 🌟 눈과 비를 정확하게 구분
+            if (CurrentPty === 1 || CurrentPty === 4) {
+                SkyIcon = '🌧️';
+            } else if (CurrentPty === 2 || CurrentPty === 3) {
+                SkyIcon = '❄️';
+            }
 
             // 날씨 아이콘 삽입 (WeatherIcon)
             const IconElem = document.getElementById("WeatherIcon");

@@ -232,12 +232,14 @@ async function fetchKmaShortTermWeather(nx, ny, targetDate) {
                         hour: fTime.substring(0, 2) + "시",
                         temp: "자료없음",
                         sky: "자료없음",
-                        pop: "자료없음"
+                        pop: "자료없음",
+                        pty: "0" // 🌟 강수 형태(PTY) 기본값 추가 (0: 없음)
                     };
                 }
                 if (item.category === 'TMP') hourlyMap[timeKey].temp = val + ' ℃';
                 if (item.category === 'SKY') hourlyMap[timeKey].sky = mapSkyStatus[val] || '자료없음';
                 if (item.category === 'POP') hourlyMap[timeKey].pop = val + '%'; 
+                if (item.category === 'PTY') hourlyMap[timeKey].pty = val; // 🌟 PTY 데이터 추출
             }
 
             // 2. 미래(내일~글피) 데이터 처리: 중기예보랑 합치기 위해 일별로 데이터를 압축함
