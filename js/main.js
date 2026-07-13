@@ -440,6 +440,55 @@ window.onload = async () => {
                 }
             }
 
+            // 날씨 파트 중간에 넣을 해양 및 상세 데이터 매칭 
+            const MarineData = weatherData.marine;
+
+            if(MarineData) {
+                // 현재 수온 (WaterTemp)
+                const WaterTempElem = document.getElementById("WaterTemp");
+                if(WaterTempElem){
+                    // 삼항연산자 (조건) ? (true일때 쓸거) : (false일때 쓸거)
+                    WaterTempElem.innerText = MarineData.waterTemp ? MarineData.waterTemp + " ℃" : "자료없음";
+                }
+                // 풍향/풍속 (WindInfo)
+                const WindInfoElem = document.getElementById("WindInfo");
+                if(WindInfoElem){
+                    // 데이터 두개를 한번에 해야해서 따로 있는거 모아서 출력함
+                    const WindDir = MarineData.windDirection || ""; // 풍향 
+                    const WindSpd = MarineData.windSpeed || ""; // 풍속
+                    // 다른데이터 처럼 상항연산자 써도 되는데 좌우로 너무 길어져서 파악하기 빡세서 그냥 이렇게 함
+                    if(WindDir && WindSpd){
+                        // `(백틱)기호 이용시 두 데이터를 한문장으로 합치기 쉬움(다른 언어에선 이런거 안써도 되지만...)
+                        WindInfoElem.innerText = `${WindDir} ${WindSpd} m/s`;
+                    } else{
+                        WindInfoElem.innerText = "자료없음";
+                    }
+                }
+                // 유의파고 (WaveHeight)
+                const WaveHeightElem = document.getElementById("WaveHeight");
+                if(WaveHeightElem){
+                    WaveHeightElem.innerText = MarineData.waveHeight ? MarineData.waveHeight + " m" : "자료없음";
+                }
+                // 조위 (TideLevel)
+                const TideLevelElem = document.getElementById("TideLevel");
+                if(TideLevelElem){
+                    TideLevelElem.innerText = MarineData.tideLevel ? MarineData.tideLevel + " cm" : "자료없음";
+                }
+                // 기온 (AirTemp)
+                const AirTempElem = document.getElementById("AirTemp");
+                if(AirTempElem){
+                    AirTempElem.innerText = weatherData.landShortTerm[0].temp || "자료없음";
+                }
+                // 해면기온 (SeaAirTemp)
+                const SeaAirTempElem = document.getElementById("SeaAirTemp");
+                if(SeaAirTempElem){
+                    SeaAirTempElem.innerText = MarineData.seaAirTemp ? MarineData.seaAirTemp + " ℃" : "자료없음";
+                }
+            } else {
+                console.log("해양 데이터(marine) 객체가 비어있음, dataDisplay.js 항목 점검할것");
+            }
+
+
             // 주간 일기예보 렌더링 함수 호출
             if (weatherData.landMidTerm) {
                 RenderWeeklyWeather(weatherData.landMidTerm);
