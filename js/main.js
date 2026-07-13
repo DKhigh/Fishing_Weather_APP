@@ -190,12 +190,18 @@ function renderHourlyWeather(hourlyDataArray) {
         if (hourItem.sky === '흐림') skyIcon = '☁️';
         
         // 🌟 강수형태(PTY)에 따른 비/눈 이모지 처리
-        // 1: 비, 2: 비/눈, 3: 눈, 4: 소나기
+        // 1: 비, 2: 비/눈, 3: 눈, 4: 소나기 (소나기는 적당한 이모지를 못찾았음)
         let ptyCode = parseInt(hourItem.pty);
-        if (ptyCode === 1 || ptyCode === 4) {
+        if (ptyCode === '비') {
             skyIcon = '🌧️';
-        } else if (ptyCode === 2 || ptyCode === 3) {
+        } else if (ptyCode === '비/눈'){
+            skyIcon = '🌨️';
+        } else if (ptyCode === '눈'){
             skyIcon = '❄️';
+        }
+        // PTY 값이 없거나 0인데 강수확률이 50% 넘으면 비로 처리함
+        else if (hourItem.pop !== '자료없음' && parseInt(hourItem.pop) >= 50) {
+            skyIcon = '🌧️';
         }
 
         // 2. 올려주신 HTML 코드에 맞춰서 클래스명을 'hourlyItem'으로 맞췄습니다.
@@ -265,7 +271,18 @@ function RenderWeeklyWeather(WeeklyDataArray) {
         }
 
         // 날씨 상태별로 이모티콘 매칭 (오후 하늘 상태(skyPm in. dataDisplay.js) 기준)
-        const SkyStatus = Item.skyPm || '맑음'; // 기본값을 '맑음'으로 설정함 (받은값이 없거나 예상밖의 것이면 기본값 출력함)
+        // 자료없음 텍스트 그대로 출력되는거 방지용 코드 (기존 코드는 자료없음 텍스트를 방지 못했음)
+        let SkyStatus = Item.skyPm;
+        if (SkyStatus === '자료없음' || !SkyStatus){
+            SkyStatus = Item.skyAm || Item.wfPm || Item.wfAm || '맑음';
+        }
+
+        // 강수형태(PTY)가 존재하면 해당 텍스트를 바로 덮어씌움 (비, 눈 등...)
+        if (Item.pty && Item.pty !== '0'){
+            SkyStatus = Item.pty;
+        }
+
+        // 텍스트 기준으로 이모지 결정함
         let SkyIcon = '☀️';
         if (SkyStatus.includes('비') || SkyStatus.includes('소나기'))
             SkyIcon = '🌧️';
@@ -366,19 +383,28 @@ window.onload = async () => {
             }
             
             // 현재 날씨 상태 아이콘 및 세부설명 (WeatherIcon, WeatherStatus)
-            const CurrentSky = weatherData.landShortTerm[0].sky; 
-            const CurrentPty = parseInt(weatherData.landShortTerm[0].pty); // 🌟 PTY 데이터 가져오기
+            const CurrentSky = weatherData.landShortTerm[0].sky; // 현재 기상 상태
+            const CurrentPty = weatherData.landShortTerm[0].pty; // 🌟 PTY 데이터 가져오기
+            const CurrentPop = parseInt(weatherData.landShortTerm[0].pop) // 강수확룰
 
             // 하늘 상태랑 강수 형태(PTY)를 종합해서 이모지 결정
             let SkyIcon = '☀️';
+            let StatusText = CurrentSky;
             if (CurrentSky === '구름많음') SkyIcon = '⛅';
             if (CurrentSky === '흐림') SkyIcon = '☁️';
             
-            // 🌟 눈과 비를 정확하게 구분
-            if (CurrentPty === 1 || CurrentPty === 4) {
+            // 강수형태가 있으면 상태 텍스트랑 아이콘을 눈 or 비로 수정함
+            if (CurrentPty === '비') {
                 SkyIcon = '🌧️';
-            } else if (CurrentPty === 2 || CurrentPty === 3) {
+                StatusText = '비';
+            } else if (CurrentPty === '비/눈') {
+                SkyIcon = '🌨️';
+                StatusText = '비/눈';
+            } else if (CurrentPty === '눈') {
                 SkyIcon = '❄️';
+                StatusText = '눈';
+            } else if (!isNaN(CurrentPop) && CurrentPop > 50) {
+                SkyIcon = '🌧️'; // 예비용 방어 코드
             }
 
             // 날씨 아이콘 삽입 (WeatherIcon)
