@@ -313,6 +313,24 @@ function RenderWeeklyWeather(WeeklyDataArray) {
     WeeklyContainer.innerHTML = HtmlContent;
 }
 
+// 풍향 표기를 방위각(0 ~ 360)에서 16방위(문자열; 북, 북동, 북북서)형태로 변환하는 함수
+function GetWindDirectionString(degree){
+    // 데이터 없거나 숫자형태가 아니면 그대로 반환 (설마 숫자로 주는데 자료형은 문자열이겠어 하면서 넣은거)
+    if(degree === undefined || degree === null || isNaN(degree))
+        return degree;
+
+    // 360도를 22.5도씩 16등분, 0.5더하는건 한칸씩 밀리는거 방지용
+    const val = Math.floor((parseFloat(degree) / 22.5) + 0.5);
+    const arr = [
+        "북", "북북동", "북동", "동북동",
+        "동", "동남동", "남동", "남남동",
+        "남", "남남서", "남서", "서남서",
+        "서", "서북서", "북서", "북북서"
+    ];
+
+    return arr[val % 16];
+}
+
 
 /**
  * 🛠️ 앱 로드 시 실제 GPS와 네이버 API를 이용해 주소 및 날씨 불러오기
@@ -454,12 +472,15 @@ window.onload = async () => {
                 const WindInfoElem = document.getElementById("WindInfo");
                 if(WindInfoElem){
                     // 데이터 두개를 한번에 해야해서 따로 있는거 모아서 출력함
-                    const WindDir = MarineData.windDirection || ""; // 풍향 
+                    const WindDir = MarineData.windDirection; // 풍향 (얘는 밑에서 한번 더 처리해서 냅둠)
                     const WindSpd = MarineData.windSpeed || ""; // 풍속
+
+                    // 방위각을 글자로 변환함 
+                    const WindDirText = WindDir ? GetWindDirectionString(WindDir) : "";
                     // 다른데이터 처럼 상항연산자 써도 되는데 좌우로 너무 길어져서 파악하기 빡세서 그냥 이렇게 함
-                    if(WindDir && WindSpd){
+                    if(WindDirText && WindSpd){
                         // `(백틱)기호 이용시 두 데이터를 한문장으로 합치기 쉬움(다른 언어에선 이런거 안써도 되지만...)
-                        WindInfoElem.innerText = `${WindDir} ${WindSpd} m/s`;
+                        WindInfoElem.innerText = `${WindDirText} 풍  ${WindSpd} m/s`;
                     } else{
                         WindInfoElem.innerText = "자료없음";
                     }
