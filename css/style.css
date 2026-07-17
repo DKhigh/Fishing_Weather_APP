@@ -147,7 +147,7 @@ object {
 }
 
 .sheet {
-    max-height: 70dvh; /* 최대 높이를 화면의 70%로 제한 */
+    max-height: 70vh; /* 최대 높이를 화면의 70%로 제한 */
     display: flex;
     flex-direction: column;
 }
@@ -187,7 +187,7 @@ object {
     width: 80%;         /* 모바일 화면 너비의 80% 차지 */
     max-width: 300px;   /* 태블릿이나 PC에서 너무 넓어지지 않도록 방지 */
     
-    height: 100dvh;      /* 🌟 요구사항: 100% 대신 100vh를 쓰면 상단 바를 포함해 위아래로 완전히 꽉 찹니다! */
+    height: 100vh;      /* 🌟 요구사항: 100% 대신 100vh를 쓰면 상단 바를 포함해 위아래로 완전히 꽉 찹니다! */
     
     background-color: white;
     box-shadow: -2px 0 10px rgba(0, 0, 0, 0.15); /* 왼쪽에 은은한 그림자를 주어 입체감 부여 */
@@ -245,7 +245,7 @@ left: 0;  transform: translateX(-100%); -> 좌측 정렬 & 좌측 숨김
 #weather { 
     position: relative; 
     z-index: 10; 
-    margin-top: calc(100svh - 150px); /* dvh는 고정으로 하는거라 화면이 꿀렁거릴수 있음 */
+    margin-top: calc(100vh - 150px); /* dvh는 고정으로 하는거라 화면이 꿀렁거릴수 있음 */
     
     /* 🌟 핵심 1: 왼쪽 쏠림 방지 및 가로 폭 제한(500px) 풀기 */
     width: 100%;
