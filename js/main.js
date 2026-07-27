@@ -86,35 +86,7 @@ function setupMapEvents() {
             console.log('[낚시 스팟 클릭] 이름표 : [${SpotName}], 현재 월 : ${CurrentMonth}월'); // 이건 디버깅용이라 배포땐 없애야함 
 
             // 하드 코딩한 물고기 데이터에서 스팟 정보 찾기
-            const SpotData = FishSpotData[SpotName];
-            if (SpotData && SpotData.FishByMonth[CurrentMonth]) {
-                const CurrentFishes = SpotData.FishByMonth[CurrentMonth];
-                console.log('${SpotName}의 ${CurrentMonth}월 어종 데이터 매칭 성공', CurrentFishes);
-
-                // 여기에 팝업이나 새로운 바텀 시트 올리는 로직 작성하면 될듯?
-                // 데이터 HTML로 변환
-                let FishListHTML = CurrentFishes.map(fish => {
-                    return `<li>
-                        <a href="${fish.link}" style="display: block; padding: 10px; background: #f2f4f6; border-radius: 10px; margin-bottom: 8px; text-decoration: none; color: #191f28; font-weight: bold;">
-                            ${fish.FishName} 정보 보기
-                        </a>
-                    </li>`; 
-                }).join('');
-                // 바텀 시트 데이터 삽입
-                const FishSheetContent = document.getElementById('FishSheetContent');
-                FishSheetContent.innerHTML = `
-                    <h2 style="margin-top: 0; color: #2957a8;">${SpotName} (${CurrentMonth}월)</h2>
-                    <p style="color: #4e5968; margin-bottom: 15px;">이달의 추천 어종을 확인해 보세요!</p>
-                    <ul style="list-style: none; padding-left: 0;">
-                        ${FishListHTML}
-                    </ul>
-                `;
-                // 바텀 시트 스윽 올리기
-                document.getElementById('FishBottomSheet').classList.add('Show');
-            } else{
-                console.warn(`❌ [${SpotName}]의 ${CurrentMonth}월 어종 데이터가 없습니다.`);
-                // alert 위아래 이것들은 시트 넣기 전에 임시 출력용임.
-            }
+            
         });
     });
 }
