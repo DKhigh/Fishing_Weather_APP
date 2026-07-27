@@ -245,7 +245,7 @@ left: 0;  transform: translateX(-100%); -> 좌측 정렬 & 좌측 숨김
 #weather { 
     position: relative; 
     z-index: 10; 
-    margin-top: calc(100vh - 150px);
+    margin-top: calc(100vh - 150px); /* dvh는 고정으로 하는거라 화면이 꿀렁거릴수 있음 */
     
     /* 🌟 핵심 1: 왼쪽 쏠림 방지 및 가로 폭 제한(500px) 풀기 */
     width: 100%;
