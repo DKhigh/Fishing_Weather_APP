@@ -111,11 +111,9 @@ function setupMapEvents() {
                 `;
                 // 바텀 시트 스윽 올리기
                 document.getElementById('FishBottomSheet').classList.add('Show');
-                alert(`${SpotName}의 ${CurrentMonth}월 추천 어종은 ${CurrentFishes[0].FishName} 등 총 ${CurrentFishes.length}종 입니다!`);
             } else{
                 console.warn(`❌ [${SpotName}]의 ${CurrentMonth}월 어종 데이터가 없습니다.`);
                 // alert 위아래 이것들은 시트 넣기 전에 임시 출력용임.
-                alert(`${SpotName}의 이번 달 어종 데이터가 준비되지 않았습니다.`);
             }
         });
     });
